@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daraltea Travel · Facebook</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0D1B2A;--navy2:#0a1520;
+  --gold:#C9A84C;--gold2:#e8c97a;--blue:#2176AE;
+  --white:#F5F5F0;--glow:rgba(201,168,76,.35);--border:rgba(201,168,76,.14);
+  --fb-blue:#1877F2;--fb-dark:#18191a;--fb-surface:#242526;--fb-hover:#3a3b3c;
+  --fb-text:#e4e6eb;--fb-muted:#b0b3b8;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--fb-dark);color:var(--fb-text);font-family:'Lato',sans-serif;font-weight:400;min-height:100vh;overflow-x:hidden}
+#stars-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.3}
+a{color:inherit;text-decoration:none}
+
+/* ── FB TOP BAR ── */
+.fb-topbar{
+  position:sticky;top:0;z-index:200;
+  background:var(--fb-surface);border-bottom:1px solid #3e4042;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 1rem;height:56px;
+}
+.fb-logo{
+  font-weight:900;font-size:1.6rem;color:var(--fb-blue);
+  font-family:Georgia,serif;letter-spacing:-.02em;flex-shrink:0;
+}
+.fb-search{
+  flex:1;max-width:280px;margin:0 .8rem;
+  background:#3a3b3c;border-radius:50px;border:none;
+  display:flex;align-items:center;gap:.5rem;padding:.5rem .9rem;
+}
+.fb-search input{background:none;border:none;color:var(--fb-text);font-size:.88rem;outline:none;width:100%}
+.fb-search input::placeholder{color:var(--fb-muted)}
+.fb-search svg{fill:var(--fb-muted);width:16px;height:16px;flex-shrink:0}
+.fb-nav-icons{display:flex;gap:.2rem;align-items:center}
+.fb-nav-ico{
+  width:40px;height:40px;border-radius:50%;background:var(--fb-hover);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  transition:background .15s;
+}
+.fb-nav-ico:hover{background:#4a4b4c}
+.fb-nav-ico svg{fill:var(--fb-text);width:20px;height:20px}
+.notif-badge{position:relative}
+.notif-badge::after{content:'3';position:absolute;top:-2px;right:-2px;background:var(--fb-blue);color:#fff;font-size:.55rem;font-weight:700;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--fb-surface)}
+
+/* ── COVER ── */
+.cover-area{position:relative;background:#000;max-width:640px;margin:0 auto}
+.cover-photo{
+  width:100%;height:200px;
+  background:linear-gradient(160deg,var(--navy2) 0%,#0f2a4a 40%,#1a2e44 100%);
+  display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;cursor:pointer;
+}
+.cover-content{z-index:1;text-align:center}
+.cover-emoji{font-size:4rem;display:block;margin-bottom:.5rem;animation:float 4s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.cover-text{font-family:'Cinzel',serif;font-size:1.1rem;color:var(--gold);letter-spacing:.12em}
+.cover-sub{font-size:.75rem;color:rgba(255,255,255,.5);letter-spacing:.15em;margin-top:.2rem}
+.cover-stars-overlay{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 80%,rgba(33,118,174,.15),transparent)}
+
+/* Stars in cover */
+.star-dot{position:absolute;border-radius:50%;background:#fff;animation:twinkle 2s ease-in-out infinite}
+@keyframes twinkle{0%,100%{opacity:.2}50%{opacity:1}}
+
+.page-photo-wrap{position:absolute;bottom:-40px;left:1rem;z-index:10}
+.page-photo{
+  width:90px;height:90px;border-radius:50%;
+  background:linear-gradient(135deg,var(--navy),#1a2e44);
+  display:flex;align-items:center;justify-content:center;font-size:2.5rem;
+  border:4px solid var(--fb-dark);
+  box-shadow:0 0 0 2px var(--gold),0 0 20px var(--glow);
+}
+
+/* ── PAGE INFO ── */
+.page-info{max-width:640px;margin:0 auto;padding:0 1rem;position:relative;z-index:1}
+.page-info-top{padding-top:3.5rem;padding-bottom:1rem;border-bottom:1px solid #3e4042}
+.page-name{font-size:1.4rem;font-weight:700;color:#fff;margin-bottom:.15rem;font-family:'Cinzel',serif;letter-spacing:.04em}
+.page-category{font-size:.85rem;color:var(--fb-muted);margin-bottom:.6rem}
+.page-followers-row{display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;margin-bottom:.8rem}
+.page-stat{font-size:.82rem;color:var(--fb-muted)}
+.page-stat strong{color:var(--fb-text);font-weight:700}
+.page-actions{display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1rem}
+.btn-like-page{
+  display:flex;align-items:center;gap:.4rem;
+  background:var(--fb-blue);color:#fff;border:none;border-radius:8px;
+  padding:.5rem 1.1rem;font-size:.9rem;font-weight:700;cursor:pointer;transition:opacity .2s;
+}
+.btn-like-page:hover{opacity:.9}
+.btn-follow-page{
+  display:flex;align-items:center;gap:.4rem;
+  background:var(--fb-hover);color:var(--fb-text);border:none;border-radius:8px;
+  padding:.5rem 1.1rem;font-size:.9rem;font-weight:700;cursor:pointer;transition:background .2s;
+}
+.btn-follow-page:hover{background:#4a4b4c}
+.btn-share-page{
+  display:flex;align-items:center;gap:.4rem;
+  background:var(--fb-hover);color:var(--fb-text);border:none;border-radius:8px;
+  padding:.5rem 1.1rem;font-size:.9rem;font-weight:700;cursor:pointer;transition:background .2s;
+}
+
+/* ── PAGE TABS ── */
+.page-tabs{
+  max-width:640px;margin:0 auto;
+  display:flex;border-bottom:1px solid #3e4042;background:var(--fb-surface);
+  position:sticky;top:56px;z-index:100;overflow-x:auto;scrollbar-width:none;
+}
+.page-tabs::-webkit-scrollbar{display:none}
+.pg-tab{
+  white-space:nowrap;padding:.75rem 1rem;font-size:.88rem;font-weight:600;
+  color:var(--fb-muted);cursor:pointer;border-bottom:3px solid transparent;
+  transition:color .2s;flex-shrink:0;
+}
+.pg-tab.active{color:var(--fb-blue);border-bottom:3px solid var(--fb-blue)}
+.pg-tab:hover{color:var(--fb-text);background:var(--fb-hover)}
+
+/* ── MAIN LAYOUT ── */
+.main-layout{max-width:640px;margin:0 auto;display:grid;grid-template-columns:1fr;gap:1rem;padding:1rem}
+
+/* ── ABOUT CARD ── */
+.fb-card{background:var(--fb-surface);border-radius:12px;padding:1.2rem;margin-bottom:0}
+.fb-card h3{font-size:1rem;font-weight:700;color:#fff;margin-bottom:.8rem;font-family:'Cinzel',serif;color:var(--gold)}
+.about-row{display:flex;align-items:flex-start;gap:.8rem;padding:.5rem 0;font-size:.88rem;color:var(--fb-muted)}
+.about-row svg{fill:var(--fb-muted);width:18px;height:18px;flex-shrink:0;margin-top:.1rem}
+.about-row a{color:var(--fb-blue)}
+.about-row strong{color:var(--fb-text)}
+
+/* ── POST ── */
+.fb-post{background:var(--fb-surface);border-radius:12px;overflow:hidden;transition:box-shadow .2s}
+.fb-post:hover{box-shadow:0 4px 20px rgba(0,0,0,.4)}
+.post-header{display:flex;align-items:center;gap:.7rem;padding:1rem 1rem .6rem}
+.post-avatar{
+  width:42px;height:42px;border-radius:50%;
+  background:linear-gradient(135deg,var(--navy),#1a2e44);
+  display:flex;align-items:center;justify-content:center;font-size:1.2rem;
+  border:1.5px solid var(--gold);flex-shrink:0;
+}
+.post-meta{flex:1}
+.post-page-name{font-size:.88rem;font-weight:700;color:#fff}
+.post-date{font-size:.75rem;color:var(--fb-muted);display:flex;align-items:center;gap:.3rem}
+.post-more{background:none;border:none;color:var(--fb-muted);font-size:1.1rem;cursor:pointer;padding:.3rem}
+.post-text{padding:0 1rem .8rem;font-size:.9rem;line-height:1.55;color:var(--fb-text)}
+.post-text a{color:var(--fb-blue)}
+.post-img{
+  width:100%;aspect-ratio:1.2;
+  display:flex;align-items:center;justify-content:center;
+  font-size:5rem;position:relative;overflow:hidden;cursor:pointer;
+}
+.post-img:hover .img-overlay{opacity:1}
+.img-overlay{position:absolute;inset:0;background:rgba(0,0,0,.3);opacity:0;transition:opacity .2s;display:flex;align-items:center;justify-content:center;font-size:2rem;color:#fff}
+.bg-p1{background:linear-gradient(135deg,#050a14,#0d1b2a,#1a2a3a)}
+.bg-p2{background:linear-gradient(135deg,#0f2a4a,#0a1520)}
+.bg-p3{background:linear-gradient(135deg,#0a1e30,#0d2a1a)}
+.bg-p4{background:linear-gradient(135deg,#0a0a1e,#1a0a2a,#0d1b2a)}
+.bg-p5{background:linear-gradient(135deg,#0a1e10,#0d2a1a,#0a1520)}
+.bg-p6{background:linear-gradient(135deg,#1e0a0a,#2a1a0a,#0d1b2a)}
+
+.post-reactions{display:flex;align-items:center;justify-content:space-between;padding:.6rem 1rem;border-top:1px solid #3e4042;border-bottom:1px solid #3e4042}
+.react-count{display:flex;align-items:center;gap:.3rem;font-size:.82rem;color:var(--fb-muted)}
+.react-emojis{display:flex}
+.react-emojis span{font-size:1rem;margin-left:-3px}
+.comment-share-count{font-size:.82rem;color:var(--fb-muted)}
+.post-actions{display:flex;gap:0}
+.post-action{
+  flex:1;display:flex;align-items:center;justify-content:center;gap:.4rem;
+  padding:.6rem;font-size:.88rem;font-weight:600;color:var(--fb-muted);
+  border:none;background:none;cursor:pointer;border-radius:8px;margin:.2rem;
+  transition:background .2s, color .2s;
+}
+.post-action:hover{background:var(--fb-hover);color:var(--fb-text)}
+.post-action.liked{color:var(--fb-blue)}
+.post-action svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2}
+.post-action.liked svg{fill:var(--fb-blue);stroke:var(--fb-blue)}
+
+/* ── PHOTO GRID ── */
+.photo-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:2px}
+.photo-grid-3{display:grid;grid-template-columns:2fr 1fr;gap:2px}
+.photo-item{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:3rem;position:relative;overflow:hidden;cursor:pointer}
+.photo-item:hover .img-overlay{opacity:1}
+.photo-item.tall{aspect-ratio:.7;grid-row:span 2}
+
+/* ── EVENTS CARD ── */
+.event-item{display:flex;gap:.8rem;padding:.6rem 0;border-bottom:1px solid #3e4042;cursor:pointer;transition:background .15s;border-radius:8px;padding:.6rem}
+.event-item:hover{background:var(--fb-hover)}
+.event-item:last-child{border-bottom:none}
+.event-date-box{
+  width:44px;height:44px;border-radius:8px;
+  background:rgba(201,168,76,.12);border:1px solid var(--gold);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;
+}
+.event-month{font-size:.55rem;color:var(--gold);text-transform:uppercase;letter-spacing:.1em;font-weight:700}
+.event-day{font-size:1.1rem;font-weight:900;color:var(--gold);line-height:1}
+.event-info h4{font-size:.88rem;font-weight:700;color:#fff;margin-bottom:.1rem}
+.event-info p{font-size:.75rem;color:var(--fb-muted);line-height:1.3}
+.event-btn{
+  display:inline-block;margin-top:.4rem;font-size:.72rem;font-weight:700;
+  color:var(--fb-blue);background:rgba(24,119,242,.1);border-radius:4px;
+  padding:.2rem .6rem;
+}
+
+/* ── SERVICES CARD ── */
+.service-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-top:.5rem}
+.service-item{
+  background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.12);
+  border-radius:8px;padding:.8rem;text-align:center;cursor:pointer;transition:all .2s;
+}
+.service-item:hover{background:rgba(201,168,76,.1);border-color:rgba(201,168,76,.28);transform:translateY(-2px)}
+.service-ico{font-size:1.5rem;display:block;margin-bottom:.3rem}
+.service-item span{font-size:.75rem;color:var(--fb-muted);line-height:1.3;display:block}
+.service-item strong{font-size:.8rem;color:var(--fb-text);display:block;margin-bottom:.1rem;font-family:'Cinzel',serif;font-size:.72rem}
+
+/* ── REVIEW ── */
+.review-item{padding:.8rem 0;border-bottom:1px solid #3e4042}
+.review-item:last-child{border-bottom:none}
+.review-header{display:flex;align-items:center;gap:.6rem;margin-bottom:.4rem}
+.reviewer-avatar{width:32px;height:32px;border-radius:50%;background:#3a3b3c;display:flex;align-items:center;justify-content:center;font-size:.9rem}
+.reviewer-name{font-size:.85rem;font-weight:700;color:#fff}
+.review-date{font-size:.72rem;color:var(--fb-muted)}
+.stars-row{color:#f7c948;font-size:.9rem;margin-bottom:.3rem}
+.review-text{font-size:.82rem;color:var(--fb-muted);line-height:1.5}
+
+/* ── CONTACT QUICK ── */
+.contact-quick{
+  background:linear-gradient(135deg,rgba(201,168,76,.08),rgba(33,118,174,.05));
+  border:1px solid rgba(201,168,76,.15);border-radius:12px;padding:1.2rem;
+  display:flex;flex-direction:column;gap:.7rem;
+}
+.cq-row{display:flex;align-items:center;gap:.7rem;font-size:.88rem;color:var(--fb-text)}
+.cq-ico{width:36px;height:36px;border-radius:50%;background:rgba(201,168,76,.12);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.cq-row a{color:var(--fb-blue)}
+.cq-btn{
+  background:var(--fb-blue);color:#fff;border:none;border-radius:8px;
+  padding:.6rem;font-size:.88rem;font-weight:700;cursor:pointer;
+  width:100%;margin-top:.3rem;transition:opacity .2s;
+}
+.cq-btn:hover{opacity:.9}
+
+/* ── MODAL ── */
+.modal-overlay{
+  display:none;position:fixed;inset:0;z-index:300;
+  background:rgba(0,0,0,.85);align-items:center;justify-content:center;padding:1rem;
+}
+.modal-overlay.open{display:flex}
+.modal-post{
+  background:var(--fb-surface);border-radius:12px;
+  max-width:440px;width:100%;max-height:90vh;overflow-y:auto;scrollbar-width:none;
+}
+.modal-post::-webkit-scrollbar{display:none}
+.modal-header-fb{display:flex;align-items:center;justify-content:space-between;padding:1rem;border-bottom:1px solid #3e4042}
+.modal-header-fb h3{font-size:1rem;font-weight:700;color:#fff}
+.modal-close-fb{background:var(--fb-hover);border:none;color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1rem}
+.modal-body-fb{padding:1rem}
+.comment-list{margin-top:.8rem}
+.fb-comment{display:flex;gap:.6rem;margin-bottom:.8rem}
+.fb-comment-avatar{width:32px;height:32px;border-radius:50%;background:#3a3b3c;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0}
+.fb-comment-bubble{background:#3a3b3c;border-radius:12px;padding:.5rem .8rem;flex:1}
+.fb-comment-bubble strong{font-size:.8rem;color:#fff;display:block}
+.fb-comment-bubble span{font-size:.82rem;color:var(--fb-muted)}
+.comment-input-fb{display:flex;gap:.6rem;margin-top:.8rem;align-items:center}
+.comment-input-fb input{flex:1;background:#3a3b3c;border:none;color:#fff;border-radius:20px;padding:.5rem .9rem;font-size:.82rem;outline:none}
+.comment-input-fb input::placeholder{color:var(--fb-muted)}
+.comment-input-fb button{background:var(--fb-blue);border:none;color:#fff;border-radius:50%;width:34px;height:34px;cursor:pointer;font-size:.9rem}
+</style>
+</head>
+<body>
+<canvas id="stars-canvas"></canvas>
+
+<!-- TOP BAR -->
+<div class="fb-topbar">
+  <div class="fb-logo">facebook</div>
+  <div class="fb-search">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65" stroke="#fff" stroke-width="2"/></svg>
+    <input type="text" placeholder="Buscar en Facebook">
+  </div>
+  <div class="fb-nav-icons">
+    <div class="fb-nav-ico notif-badge">
+      <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    </div>
+    <div class="fb-nav-ico">
+      <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    </div>
+  </div>
+</div>
+
+<!-- COVER -->
+<div class="cover-area">
+  <div class="cover-photo">
+    <div class="cover-stars-overlay"></div>
+    <!-- decorative stars -->
+    <div class="star-dot" style="width:2px;height:2px;top:15%;left:10%;animation-delay:0s"></div>
+    <div class="star-dot" style="width:3px;height:3px;top:25%;left:30%;animation-delay:.5s"></div>
+    <div class="star-dot" style="width:1.5px;height:1.5px;top:20%;left:55%;animation-delay:1s"></div>
+    <div class="star-dot" style="width:2.5px;height:2.5px;top:35%;left:75%;animation-delay:.3s"></div>
+    <div class="star-dot" style="width:2px;height:2px;top:10%;left:85%;animation-delay:.8s"></div>
+    <div class="star-dot" style="width:1px;height:1px;top:40%;left:45%;animation-delay:1.5s;background:#C9A84C"></div>
+    <div class="star-dot" style="width:3px;height:3px;top:12%;left:65%;animation-delay:1.2s;background:#C9A84C"></div>
+    <div class="star-dot" style="width:2px;height:2px;top:48%;left:20%;animation-delay:.7s;background:#C9A84C"></div>
+    <div class="cover-content">
+      <span class="cover-emoji">🌌</span>
+      <div class="cover-text">DARALTEA TRAVEL</div>
+      <div class="cover-sub">✦ Astroturismo en la Costa Blanca ✦</div>
+    </div>
+  </div>
+  <div class="page-photo-wrap">
+    <div class="page-photo">🌟</div>
+  </div>
+</div>
+
+<!-- PAGE INFO -->
+<div class="page-info">
+  <div class="page-info-top">
+    <div class="page-name">DARALTEA TRAVEL</div>
+    <div class="page-category">🏢 Agencia de viajes · Altea, Alicante</div>
+    <div class="page-followers-row">
+      <span class="page-stat"><strong>4.821</strong> Me gusta</span>
+      <span class="page-stat">·</span>
+      <span class="page-stat"><strong>5.103</strong> seguidores</span>
+    </div>
+    <div class="page-actions">
+      <button class="btn-like-page" onclick="toggleLikePage(this)">
+        <span>👍</span> Me gusta
+      </button>
+      <button class="btn-follow-page" onclick="toggleFollowPage(this)">
+        <span>🔔</span> Seguir
+      </button>
+      <button class="btn-share-page">
+        <span>↗</span> Compartir
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE TABS -->
+<div class="page-tabs">
+  <div class="pg-tab active" onclick="switchTab('inicio',this)">Inicio</div>
+  <div class="pg-tab" onclick="switchTab('publicaciones',this)">Publicaciones</div>
+  <div class="pg-tab" onclick="switchTab('fotos',this)">Fotos</div>
+  <div class="pg-tab" onclick="switchTab('sobre',this)">Sobre nosotros</div>
+  <div class="pg-tab" onclick="switchTab('eventos',this)">Eventos</div>
+  <div class="pg-tab" onclick="switchTab('opiniones',this)">Opiniones</div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main-layout" id="content-area">
+
+  <!-- ABOUT CARD -->
+  <div class="fb-card">
+    <h3>✦ Sobre Daraltea Travel</h3>
+    <div class="about-row">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span>Agencia de viajes especializada en <strong>Astroturismo</strong> en la Costa Blanca</span>
+    </div>
+    <div class="about-row">
+      <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      <span><strong>Av. Jaime I, nº 13</strong> · 03590 Altea, Alicante</span>
+    </div>
+    <div class="about-row">
+      <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      <span><a href="tel:654321123"><strong>654 321 123</strong></a></span>
+    </div>
+    <div class="about-row">
+      <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      <span><a href="mailto:info@daraltea.com">info@daraltea.com</a></span>
+    </div>
+    <div class="about-row">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      <span><a href="https://daraltea.com">daraltea.com</a></span>
+    </div>
+  </div>
+
+  <!-- SERVICES CARD -->
+  <div class="fb-card">
+    <h3>🌟 Nuestras Experiencias</h3>
+    <div class="service-grid">
+      <div class="service-item"><span class="service-ico">🌌</span><strong>Estrellas Mediterráneo</strong><span>Viaje estrella · Altea · Aitana · Tabarca</span></div>
+      <div class="service-item"><span class="service-ico">🔭</span><strong>Astroturismo</strong><span>Telescopio profesional · Vía Láctea</span></div>
+      <div class="service-item"><span class="service-ico">🤿</span><strong>Bautismo Buceo</strong><span>Aguas cristalinas · Sin experiencia</span></div>
+      <div class="service-item"><span class="service-ico">🚣</span><strong>Kayak Amanecer</strong><span>Mediterráneo en calma · Ruta costera</span></div>
+      <div class="service-item"><span class="service-ico">📸</span><strong>Astrofotografía</strong><span>Taller fotográfico nocturno</span></div>
+      <div class="service-item"><span class="service-ico">🍷</span><strong>Cata de Vinos</strong><span>DO Alicante · Maridaje local</span></div>
+    </div>
+  </div>
+
+  <!-- POST 1 -->
+  <div class="fb-post">
+    <div class="post-header">
+      <div class="post-avatar">🌟</div>
+      <div class="post-meta">
+        <div class="post-page-name">Daraltea Travel</div>
+        <div class="post-date">🌐 Hace 2 días · Altea, Alicante</div>
+      </div>
+      <button class="post-more">⋯</button>
+    </div>
+    <div class="post-text">
+      🌌 <strong>¿Sabías que en la Costa Blanca hay más de 300 noches despejadas al año?</strong><br><br>
+      Desde los 1.558 metros de la Sierra de Aitana, la Vía Láctea es tan real que casi puedes tocarla. Ésta es la esencia de nuestro viaje estrella "Estrellas del Mediterráneo": Altea, Aitana e Isla Tabarca en una experiencia única de astroturismo.<br><br>
+      ✨ Grupos reducidos · máx. 20 personas<br>
+      📞 Reservas: <a href="tel:654321123">654 321 123</a>
+    </div>
+    <div class="post-img bg-p1" onclick="openPost(0)">
+      <span style="font-size:5rem">🌌</span>
+      <div class="img-overlay">🔍 Ver más</div>
+    </div>
+    <div class="post-reactions">
+      <div class="react-count">
+        <div class="react-emojis"><span>👍</span><span>❤️</span><span>😮</span></div>
+        287 reacciones
+      </div>
+      <div class="comment-share-count">44 comentarios · 31 veces compartido</div>
+    </div>
+    <div class="post-actions">
+      <button class="post-action" onclick="toggleReact(this)">
+        <svg viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+        Me gusta
+      </button>
+      <button class="post-action" onclick="openPost(0)">
+        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Comentar
+      </button>
+      <button class="post-action">
+        <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        Compartir
+      </button>
+    </div>
+  </div>
+
+  <!-- POST 2 PHOTO GRID -->
+  <div class="fb-post">
+    <div class="post-header">
+      <div class="post-avatar">🌟</div>
+      <div class="post-meta">
+        <div class="post-page-name">Daraltea Travel</div>
+        <div class="post-date">🌐 Hace 5 días · Altea, Alicante</div>
+      </div>
+      <button class="post-more">⋯</button>
+    </div>
+    <div class="post-text">
+      🏛️ <strong>Altea, el pueblo más bonito de la Costa Blanca.</strong> Cada rincón es una postal. La cúpula azul de la iglesia, las bugenvillas en flor, el laberinto de calles empedradas... y el Mediterráneo de fondo. <br><br>¿Te imaginas vivir esto en persona? Forma parte de nuestro viaje estrella 🌟
+    </div>
+    <div class="photo-grid-3">
+      <div class="photo-item tall bg-p2 onclick="openPost(1)"">
+        <span>🏛️</span>
+        <div class="img-overlay">🔍</div>
+      </div>
+      <div class="photo-item bg-p5" onclick="openPost(4)">
+        <span>⛰️</span>
+        <div class="img-overlay">🔍</div>
+      </div>
+      <div class="photo-item bg-p4" onclick="openPost(3)">
+        <span>🏝️</span>
+        <div class="img-overlay">🔍</div>
+      </div>
+    </div>
+    <div class="post-reactions">
+      <div class="react-count"><div class="react-emojis"><span>❤️</span><span>😍</span><span>👍</span></div>412 reacciones</div>
+      <div class="comment-share-count">67 comentarios · 52 veces compartido</div>
+    </div>
+    <div class="post-actions">
+      <button class="post-action" onclick="toggleReact(this)">
+        <svg viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+        Me gusta
+      </button>
+      <button class="post-action" onclick="openPost(1)">
+        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Comentar
+      </button>
+      <button class="post-action">
+        <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        Compartir
+      </button>
+    </div>
+  </div>
+
+  <!-- POST 3 -->
+  <div class="fb-post">
+    <div class="post-header">
+      <div class="post-avatar">🌟</div>
+      <div class="post-meta">
+        <div class="post-page-name">Daraltea Travel</div>
+        <div class="post-date">🌐 Hace 1 semana · Isla de Tabarca</div>
+      </div>
+      <button class="post-more">⋯</button>
+    </div>
+    <div class="post-text">
+      🏝️ <strong>Isla de Tabarca — La única isla habitada de la Comunidad Valenciana.</strong><br><br>
+      Primera Reserva Marina de España desde 1986. Aguas de cristal, fauna submarina espectacular y una calma que no encontrarás en ningún otro lugar del Mediterráneo. Incluida en nuestro paquete estrella.<br><br>
+      🤿 Bautismo de buceo incluido<br>
+      🚢 Excursión en barco<br>
+      🌊 Snorkel en aguas protegidas
+    </div>
+    <div class="post-img bg-p4" onclick="openPost(3)">
+      <span style="font-size:5rem">🏝️</span>
+      <div class="img-overlay">🔍 Ver más</div>
+    </div>
+    <div class="post-reactions">
+      <div class="react-count"><div class="react-emojis"><span>😍</span><span>❤️</span><span>👍</span></div>524 reacciones</div>
+      <div class="comment-share-count">89 comentarios · 76 veces compartido</div>
+    </div>
+    <div class="post-actions">
+      <button class="post-action" onclick="toggleReact(this)">
+        <svg viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+        Me gusta
+      </button>
+      <button class="post-action" onclick="openPost(3)">
+        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Comentar
+      </button>
+      <button class="post-action">
+        <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        Compartir
+      </button>
+    </div>
+  </div>
+
+  <!-- EVENTS CARD -->
+  <div class="fb-card">
+    <h3>📅 Próximas Salidas</h3>
+    <div class="event-item">
+      <div class="event-date-box"><span class="event-month">May</span><span class="event-day">10</span></div>
+      <div class="event-info">
+        <h4>Estrellas del Mediterráneo — Salida primavera</h4>
+        <p>🌌 Altea · Sierra Aitana · Isla Tabarca · 4 días</p>
+        <span class="event-btn">Reservar plaza</span>
+      </div>
+    </div>
+    <div class="event-item">
+      <div class="event-date-box"><span class="event-month">Jun</span><span class="event-day">7</span></div>
+      <div class="event-info">
+        <h4>Taller de Astrofotografía Premium</h4>
+        <p>📸 Sierra Aitana · 1 día · Máx. 12 personas</p>
+        <span class="event-btn">Ver detalles</span>
+      </div>
+    </div>
+    <div class="event-item">
+      <div class="event-date-box"><span class="event-month">Jun</span><span class="event-day">21</span></div>
+      <div class="event-info">
+        <h4>Noche de San Juan + Estrellas en Altea</h4>
+        <p>🔥 Edición especial solsticio de verano</p>
+        <span class="event-btn">¡Plazas limitadas!</span>
+      </div>
+    </div>
+    <div class="event-item">
+      <div class="event-date-box"><span class="event-month">Jul</span><span class="event-day">12</span></div>
+      <div class="event-info">
+        <h4>Estrellas del Mediterráneo — Salida verano</h4>
+        <p>🌊 Alta temporada · Perseidas en agosto</p>
+        <span class="event-btn">Reservar plaza</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- REVIEWS CARD -->
+  <div class="fb-card">
+    <h3>⭐ Opiniones de viajeros</h3>
+    <div class="review-item">
+      <div class="review-header">
+        <div class="reviewer-avatar">😊</div>
+        <div><div class="reviewer-name">María González</div><div class="review-date">Hace 2 semanas</div></div>
+      </div>
+      <div class="stars-row">★★★★★</div>
+      <div class="review-text">Una experiencia que cambió mi forma de ver el mundo. Ver la Vía Láctea con telescopio profesional mientras escuchas el silencio de Aitana... No hay palabras. Ya hemos reservado para el año que viene.</div>
+    </div>
+    <div class="review-item">
+      <div class="review-header">
+        <div class="reviewer-avatar">🌟</div>
+        <div><div class="reviewer-name">Carlos Martínez</div><div class="review-date">Hace 1 mes</div></div>
+      </div>
+      <div class="stars-row">★★★★★</div>
+      <div class="review-text">El bautismo de buceo en Tabarca fue lo mejor del viaje. Aguas cristalinas, peces de colores y un instructor increíble. El viaje completo es una joya. 100% recomendado.</div>
+    </div>
+    <div class="review-item">
+      <div class="review-header">
+        <div class="reviewer-avatar">🏛️</div>
+        <div><div class="reviewer-name">Laura Sánchez</div><div class="review-date">Hace 1 mes</div></div>
+      </div>
+      <div class="stars-row">★★★★★</div>
+      <div class="review-text">Altea es como de cuento. El kayak al amanecer fue espectacular, la cata de vinos deliciosa y la noche de astrofotografía... ¡conseguí mi primera foto de la Vía Láctea! Gracias Daraltea.</div>
+    </div>
+  </div>
+
+  <!-- CONTACT QUICK -->
+  <div class="fb-card">
+    <h3>📞 Contacta con nosotros</h3>
+    <div class="contact-quick">
+      <div class="cq-row"><div class="cq-ico">📍</div> Av. Jaime I, nº 13 · Altea, Alicante</div>
+      <div class="cq-row"><div class="cq-ico">📞</div> <a href="tel:654321123"><strong>654 321 123</strong></a></div>
+      <div class="cq-row"><div class="cq-ico">✉️</div> <a href="mailto:info@daraltea.com">info@daraltea.com</a></div>
+      <div class="cq-row"><div class="cq-ico">🌐</div> <a href="#">daraltea.com</a></div>
+      <button class="cq-btn" onclick="alert('📞 Llámanos al 654 321 123\n✉️ info@daraltea.com\n📍 Av. Jaime I nº13 · Altea\n\n¡Estaremos encantados de ayudarte a planificar tu viaje!')">
+        ✉️ Enviar mensaje a Daraltea Travel
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<!-- POST MODAL -->
+<div class="modal-overlay" id="modal" onclick="checkClose(event)">
+  <div class="modal-post">
+    <div class="modal-header-fb">
+      <h3 id="modal-title">Publicación de Daraltea Travel</h3>
+      <button class="modal-close-fb" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body-fb">
+      <div id="modal-text-fb" style="font-size:.9rem;line-height:1.55;color:#e4e6eb;margin-bottom:.8rem"></div>
+      <div id="modal-img-fb" style="width:100%;aspect-ratio:1;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:5rem;margin-bottom:.8rem"></div>
+      <div class="comment-list" id="modal-comments-fb"></div>
+      <div class="comment-input-fb">
+        <input type="text" placeholder="Escribe un comentario..." id="fb-comment-input">
+        <button onclick="addFBComment()">↗</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// STARS
+(function(){
+  const cv=document.getElementById('stars-canvas'),ctx=cv.getContext('2d');
+  let W,H,stars=[];
+  function resize(){W=cv.width=window.innerWidth;H=cv.height=window.innerHeight}
+  resize();window.addEventListener('resize',resize);
+  function init(){
+    stars=[];const n=Math.floor(W*H/2000);
+    for(let i=0;i<n;i++)stars.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.5+.3,a:Math.random(),da:(Math.random()*.006+.002)*(Math.random()>.5?1:-1),c:Math.random()>.65?'#C9A84C':'#fff'});
+  }
+  init();window.addEventListener('resize',init);
+  function loop(){
+    ctx.clearRect(0,0,W,H);
+    for(const s of stars){
+      s.a+=s.da;if(s.a>1||s.a<.08)s.da*=-1;
+      ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle=s.c;ctx.globalAlpha=s.a;ctx.fill();
+    }
+    ctx.globalAlpha=1;requestAnimationFrame(loop);
+  }
+  loop();
+})();
+
+const posts=[
+  {title:'🌌 Estrellas del Mediterráneo',text:'300 noches despejadas al año. La Vía Láctea desde Sierra Aitana (1.558m) es la experiencia astronómica más impresionante de la Costa Blanca. Nuestro viaje estrella incluye Altea, Aitana e Isla Tabarca.\n\n📞 Reservas: 654 321 123\n📍 Av. Jaime I nº13 · Altea',bg:'linear-gradient(135deg,#050a14,#0d1b2a,#1a2a3a)',emoji:'🌌',
+   comments:[{a:'😊',u:'María G.',t:'¡Reservada para mayo! No podemos esperar 😍'},{a:'⭐',u:'Pedro M.',t:'¿Hay disponibilidad para junio?'}]},
+  {title:'🏛️ Altea, el corazón del viaje',text:'El casco antiguo de Altea con su emblemática cúpula azul es uno de los pueblos más bellos de España. Calles empedradas, flores en cada balcón y vistas al Mediterráneo. Éste es nuestro punto de partida.',bg:'linear-gradient(135deg,#0f2a4a,#0a1520)',emoji:'🏛️',
+   comments:[{a:'🌟',u:'Laura S.',t:'Altea es un lugar mágico, tengo muchas ganas de volver'},{a:'🏛️',u:'Carlos R.',t:'El pueblo más bonito que he visitado nunca'}]},
+  {title:'🤿 Bautismo de Buceo · Tabarca',text:'¿Tu primer contacto con el fondo del mar? En las aguas cristalinas de la Isla de Tabarca, con visibilidad de hasta 20 metros, descubrirás un mundo completamente diferente. Sin experiencia necesaria.',bg:'linear-gradient(135deg,#0a1e30,#0d2a1a)',emoji:'🤿',
+   comments:[{a:'🐠',u:'Ana L.',t:'Lo hice el año pasado y fue lo más emocionante de mi vida'},{a:'🌊',u:'Marcos T.',t:'¿El instructor habla inglés también?'}]},
+  {title:'🏝️ Isla de Tabarca · Reserva Marina',text:'Primera Reserva Marina de España desde 1986. La única isla habitada de la Comunidad Valenciana. Aguas de cristal, biodiversidad única y una paz que no encontrarás en ningún otro lugar. Incluida en el viaje estrella.',bg:'linear-gradient(135deg,#0a0a1e,#1a0a2a)',emoji:'🏝️',
+   comments:[{a:'😍',u:'Isabel F.',t:'Tabarca es un paraíso. La mejor decisión que he tomado'},{a:'🏝️',u:'Roberto G.',t:'Las fotos submarinas que conseguimos son espectaculares'}]},
+  {title:'⛰️ Sierra de Aitana · 1.558m',text:'El punto más alto de la provincia de Alicante. Desde aquí, el horizonte se funde con el Mediterráneo y el cielo nocturno es el más limpio de la región. El escenario perfecto para la observación astronómica.',bg:'linear-gradient(135deg,#0a1e10,#0d2a1a)',emoji:'⛰️',
+   comments:[{a:'⛰️',u:'David C.',t:'Desde ahí arriba el mundo se ve diferente'},{a:'🔭',u:'Sofía M.',t:'¿Se puede ver Saturno con los telescopios que tenéis?'}]},
+  {title:'🍷 Cata de Vinos DO Alicante',text:'Vinos de la Denominación de Origen Alicante maridados con productos locales bajo un cielo de estrellas. El broche de oro perfecto para una noche mágica en la Costa Blanca.',bg:'linear-gradient(135deg,#1e0a0a,#2a1a0a)',emoji:'🍷',
+   comments:[{a:'🍇',u:'Elena V.',t:'Los vinos de Alicante son una revelación'},{a:'🥂',u:'Jorge P.',t:'La combinación de vinos y estrellas es insuperable'}]}
+];
+
+function openPost(i){
+  const p=posts[i];
+  document.getElementById('modal-title').textContent=p.title;
+  document.getElementById('modal-text-fb').textContent=p.text;
+  const img=document.getElementById('modal-img-fb');
+  img.style.background=p.bg;img.textContent=p.emoji;
+  const cc=document.getElementById('modal-comments-fb');
+  cc.innerHTML=p.comments.map(c=>`<div class="fb-comment"><div class="fb-comment-avatar">${c.a}</div><div class="fb-comment-bubble"><strong>${c.u}</strong><span>${c.t}</span></div></div>`).join('');
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal(){document.getElementById('modal').classList.remove('open')}
+function checkClose(e){if(e.target===document.getElementById('modal'))closeModal()}
+
+function addFBComment(){
+  const inp=document.getElementById('fb-comment-input');
+  if(!inp.value.trim())return;
+  const cc=document.getElementById('modal-comments-fb');
+  cc.innerHTML+=`<div class="fb-comment"><div class="fb-comment-avatar">👤</div><div class="fb-comment-bubble"><strong>Tú</strong><span>${inp.value}</span></div></div>`;
+  inp.value='';cc.scrollTop=cc.scrollHeight;
+}
+
+function toggleLikePage(btn){
+  if(btn.textContent.includes('Me gusta')&&!btn.textContent.includes('Ya')){
+    btn.innerHTML='<span>👍</span> Ya me gusta';btn.style.background='#166fe5';
+  }else{btn.innerHTML='<span>👍</span> Me gusta';btn.style.background='var(--fb-blue)'}
+}
+function toggleFollowPage(btn){
+  if(btn.textContent.includes('Seguir')&&!btn.textContent.includes('Siguiendo')){
+    btn.innerHTML='<span>🔔</span> Siguiendo';
+  }else{btn.innerHTML='<span>🔔</span> Seguir'}
+}
+function toggleReact(btn){
+  btn.classList.toggle('liked');
+  btn.textContent=btn.classList.contains('liked')?'👍 ¡Me gusta!':'Me gusta';
+}
+
+function switchTab(tab,el){
+  document.querySelectorAll('.pg-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  if(tab!=='inicio'){
+    const msgs={publicaciones:'Publicaciones de Daraltea Travel: viajes, experiencias y astroturismo en la Costa Blanca.',fotos:'Galería de fotos: Altea, Sierra Aitana, Isla Tabarca, buceo, kayak y noches estrelladas.',sobre:'Daraltea Travel · Agencia de viajes especializada en astroturismo · Av. Jaime I nº13, Altea · 654 321 123 · info@daraltea.com',eventos:'Próximas salidas disponibles. Reserva tu plaza en 654 321 123.',opiniones:'⭐⭐⭐⭐⭐ 4.9/5 basado en 127 reseñas de viajeros.'};
+    alert('📘 '+el.textContent+'\n\n'+msgs[tab]);
+  }
+}
+</script>
+</body>
+</html>

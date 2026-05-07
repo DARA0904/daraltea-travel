@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>@daraltea_travel · Instagram</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0D1B2A;--navy2:#0a1520;
+  --gold:#C9A84C;--gold2:#e8c97a;
+  --blue:#2176AE;--white:#F5F5F0;
+  --glass:rgba(201,168,76,.07);
+  --glow:rgba(201,168,76,.35);
+  --text-muted:rgba(245,245,240,.55);
+  --border:rgba(201,168,76,.14);
+  --ig-gradient:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:#000;
+  color:#fff;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* ── CANVAS ESTRELLAS ── */
+#stars-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5}
+
+/* ── APP WRAPPER ── */
+.app{max-width:480px;margin:0 auto;background:#000;min-height:100vh;position:relative;z-index:1}
+
+/* ── TOP BAR IG ── */
+.ig-topbar{
+  position:sticky;top:0;z-index:100;
+  background:rgba(0,0,0,.9);backdrop-filter:blur(16px);
+  border-bottom:1px solid #262626;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.8rem 1rem;
+}
+.ig-logo{font-family:'Cinzel',serif;font-size:1.4rem;color:#fff;letter-spacing:.06em}
+.ig-logo span{background:var(--ig-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.topbar-icons{display:flex;gap:1.2rem;align-items:center}
+.topbar-icons svg{fill:#fff;width:24px;height:24px;cursor:pointer}
+
+/* ── STORIES BAR ── */
+.stories-bar{
+  display:flex;gap:.8rem;padding:1rem;
+  overflow-x:auto;scrollbar-width:none;
+  border-bottom:1px solid #111;
+}
+.stories-bar::-webkit-scrollbar{display:none}
+.story-item{display:flex;flex-direction:column;align-items:center;gap:.4rem;cursor:pointer;flex-shrink:0}
+.story-ring{
+  width:64px;height:64px;border-radius:50%;
+  background:var(--ig-gradient);
+  padding:2px;display:flex;align-items:center;justify-content:center;
+  transition:transform .2s;
+}
+.story-ring:hover{transform:scale(1.08)}
+.story-ring.seen{background:#333}
+.story-inner{
+  width:58px;height:58px;border-radius:50%;
+  background:var(--navy);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.5rem;border:2px solid #000;
+  overflow:hidden;
+}
+.story-inner.logo-story{background:linear-gradient(135deg,#0a1520,var(--navy))}
+.story-inner img{width:100%;height:100%;object-fit:cover}
+.story-label{font-size:.65rem;color:#ccc;text-align:center;max-width:64px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+
+/* ── PROFILE SECTION ── */
+.profile{padding:1.2rem 1rem 0}
+.profile-top{display:flex;align-items:center;gap:1.2rem;margin-bottom:1rem}
+.profile-avatar{
+  width:86px;height:86px;border-radius:50%;flex-shrink:0;
+  background:var(--ig-gradient);padding:2.5px;
+  display:flex;align-items:center;justify-content:center;
+}
+.avatar-inner{
+  width:79px;height:79px;border-radius:50%;
+  background:linear-gradient(135deg,var(--navy),#1a2e44);
+  display:flex;align-items:center;justify-content:center;
+  font-size:2.6rem;border:2px solid #000;
+  overflow:hidden;
+}
+.profile-stats{flex:1;display:flex;justify-content:space-around}
+.pstat{text-align:center;cursor:pointer}
+.pstat-num{font-size:1.1rem;font-weight:700;color:#fff;display:block}
+.pstat-label{font-size:.72rem;color:#999}
+.profile-info{padding:0 1rem .5rem}
+.profile-name{font-weight:700;font-size:.9rem;color:#fff;margin-bottom:.15rem}
+.profile-category{font-size:.78rem;color:#999;margin-bottom:.4rem}
+.profile-bio{font-size:.82rem;color:#e0e0e0;line-height:1.5;margin-bottom:.5rem}
+.profile-bio a{color:var(--gold);text-decoration:none}
+.profile-link{display:flex;align-items:center;gap:.3rem;font-size:.82rem;color:var(--gold)}
+.profile-link svg{width:14px;height:14px;fill:var(--gold)}
+.profile-actions{display:flex;gap:.5rem;padding:.8rem 1rem}
+.btn-follow{
+  flex:1;padding:.5rem;border-radius:8px;border:none;
+  background:var(--ig-gradient);color:#fff;font-weight:700;font-size:.88rem;cursor:pointer;
+  transition:opacity .2s;
+}
+.btn-follow:hover{opacity:.85}
+.btn-msg{
+  padding:.5rem 1.2rem;border-radius:8px;border:1px solid #333;
+  background:transparent;color:#fff;font-weight:600;font-size:.88rem;cursor:pointer;
+  transition:background .2s;
+}
+.btn-msg:hover{background:#1a1a1a}
+.btn-more{
+  padding:.5rem .8rem;border-radius:8px;border:1px solid #333;
+  background:transparent;color:#fff;font-size:1rem;cursor:pointer;
+}
+
+/* ── HIGHLIGHTS ── */
+.highlights{
+  display:flex;gap:1.2rem;padding:1rem;
+  overflow-x:auto;scrollbar-width:none;
+  border-bottom:1px solid #111;
+}
+.highlights::-webkit-scrollbar{display:none}
+.highlight{display:flex;flex-direction:column;align-items:center;gap:.5rem;cursor:pointer;flex-shrink:0}
+.hl-ring{
+  width:64px;height:64px;border-radius:50%;
+  background:#222;border:1px solid #444;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.6rem;transition:border-color .2s;
+}
+.hl-ring:hover{border-color:var(--gold)}
+.hl-label{font-size:.68rem;color:#ccc;text-align:center}
+
+/* ── TABS ── */
+.tabs{
+  display:flex;border-bottom:1px solid #222;
+  position:sticky;top:56px;z-index:50;background:#000;
+}
+.tab{
+  flex:1;display:flex;justify-content:center;align-items:center;
+  padding:.7rem;cursor:pointer;border-bottom:1px solid transparent;
+  transition:border-color .2s;
+}
+.tab.active{border-bottom:1px solid #fff}
+.tab svg{width:24px;height:24px;fill:none;stroke:#666;stroke-width:1.5;transition:stroke .2s}
+.tab.active svg{stroke:#fff}
+
+/* ── GRID ── */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+.grid-item{
+  aspect-ratio:1;background:var(--navy);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;position:relative;overflow:hidden;
+  transition:opacity .2s;
+}
+.grid-item:hover .grid-overlay{opacity:1}
+.grid-item:hover{opacity:.85}
+.grid-overlay{
+  position:absolute;inset:0;background:rgba(0,0,0,.55);
+  display:flex;align-items:center;justify-content:center;gap.4rem;
+  opacity:0;transition:opacity .3s;flex-direction:column;gap:.3rem;
+}
+.overlay-stat{display:flex;align-items:center;gap:.3rem;font-weight:700;font-size:.85rem;color:#fff}
+.grid-emoji{font-size:2.5rem;position:absolute}
+.grid-label{
+  position:absolute;bottom:0;left:0;right:0;
+  background:linear-gradient(to top,rgba(0,0,0,.8),transparent);
+  padding:.6rem .5rem .4rem;font-size:.6rem;color:#fff;letter-spacing:.05em;
+  text-align:center;font-weight:600;text-transform:uppercase;
+}
+
+/* ── POST GRID COLORS ── */
+.p1{background:linear-gradient(135deg,#0f2a4a,#0d1b2a)}
+.p2{background:linear-gradient(135deg,#1a3a5c 0%,#0a1520 100%)}
+.p3{background:linear-gradient(135deg,#0a1e30,#0d2a1a)}
+.p4{background:linear-gradient(135deg,#1a1a2e,#0d1b2a)}
+.p5{background:linear-gradient(135deg,#0d2a1a,#0a1520)}
+.p6{background:linear-gradient(135deg,#2a1a0a,#0d1b2a)}
+.p7{background:linear-gradient(135deg,#0a2a3a,#0d1b2a)}
+.p8{background:linear-gradient(135deg,#1e0a2a,#0d1b2a)}
+.p9{background:linear-gradient(135deg,#0f2a4a,#1a1a0a)}
+
+/* ── POST MODAL ── */
+.modal-overlay{
+  display:none;position:fixed;inset:0;z-index:200;
+  background:rgba(0,0,0,.85);backdrop-filter:blur(8px);
+  align-items:center;justify-content:center;padding:1rem;
+}
+.modal-overlay.open{display:flex}
+.modal-box{
+  background:#1a1a1a;border-radius:12px;max-width:400px;width:100%;
+  max-height:90vh;overflow-y:auto;scrollbar-width:none;
+}
+.modal-box::-webkit-scrollbar{display:none}
+.modal-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.8rem 1rem;border-bottom:1px solid #333;
+}
+.modal-avatar{
+  width:36px;height:36px;border-radius:50%;
+  background:var(--ig-gradient);padding:1.5px;
+  display:flex;align-items:center;justify-content:center;
+}
+.modal-avatar-inner{
+  width:31px;height:31px;border-radius:50%;
+  background:var(--navy);display:flex;align-items:center;justify-content:center;font-size:.9rem;
+}
+.modal-user{margin-left:.5rem;flex:1}
+.modal-user strong{font-size:.82rem;color:#fff;display:block}
+.modal-user span{font-size:.7rem;color:#999}
+.modal-close{background:none;border:none;color:#fff;font-size:1.3rem;cursor:pointer;padding:.2rem}
+.modal-img{
+  width:100%;aspect-ratio:1;
+  display:flex;align-items:center;justify-content:center;font-size:5rem;
+  position:relative;overflow:hidden;
+}
+.modal-stars{
+  position:absolute;inset:0;
+  display:grid;place-items:center;
+}
+.modal-caption-area{padding:1rem}
+.modal-actions{display:flex;gap:1rem;margin-bottom:.8rem}
+.modal-actions button{background:none;border:none;cursor:pointer;padding:.2rem}
+.modal-actions svg{width:24px;height:24px;fill:none;stroke:#fff;stroke-width:1.5;transition:stroke .2s}
+.modal-actions button.liked svg{fill:#ed4956;stroke:#ed4956}
+.modal-actions button:hover svg{stroke:var(--gold)}
+.modal-likes{font-size:.82rem;font-weight:700;color:#fff;margin-bottom:.4rem}
+.modal-text{font-size:.82rem;color:#e0e0e0;line-height:1.5;margin-bottom:.8rem}
+.modal-text strong{color:#fff}
+.modal-hashtags{font-size:.78rem;color:var(--blue);margin-bottom:.8rem;line-height:1.6}
+.modal-date{font-size:.7rem;color:#666;text-transform:uppercase;letter-spacing:.08em}
+.modal-comments{border-top:1px solid #333;padding:.8rem 1rem}
+.comment{display:flex;gap:.5rem;margin-bottom:.6rem}
+.comment-avatar{width:28px;height:28px;border-radius:50%;background:#333;display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0}
+.comment-body{font-size:.78rem;color:#e0e0e0;line-height:1.4}
+.comment-body strong{color:#fff}
+.comment-body span{color:#999;font-size:.72rem;margin-left:.3rem}
+.add-comment{display:flex;align-items:center;gap:.6rem;border-top:1px solid #333;padding:.7rem 1rem}
+.add-comment input{flex:1;background:none;border:none;color:#fff;font-size:.82rem;outline:none}
+.add-comment input::placeholder{color:#666}
+.add-comment button{background:none;border:none;color:var(--gold);font-size:.82rem;font-weight:700;cursor:pointer}
+
+/* ── GOLD BAR ── */
+.gold-bar{
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  height:1px;margin:0 1rem;
+}
+
+/* ── CONTACT BAR ── */
+.contact-bar{
+  background:#0a0a0a;border-top:1px solid #222;
+  padding:1rem;display:flex;flex-direction:column;gap:.5rem;
+}
+.contact-row{display:flex;align-items:center;gap:.6rem;font-size:.82rem;color:#ccc}
+.contact-row svg{width:16px;height:16px;fill:var(--gold);flex-shrink:0}
+.contact-row a{color:var(--gold);text-decoration:none}
+
+/* ── BOTTOM NAV ── */
+.bottom-nav{
+  position:sticky;bottom:0;background:rgba(0,0,0,.95);
+  backdrop-filter:blur(16px);border-top:1px solid #222;
+  display:flex;justify-content:space-around;padding:.6rem 0 .4rem;z-index:100;
+}
+.bnav-item{
+  display:flex;flex-direction:column;align-items:center;
+  gap:.2rem;cursor:pointer;padding:.2rem .8rem;
+}
+.bnav-item svg{width:24px;height:24px;fill:none;stroke:#888;stroke-width:1.5;transition:stroke .2s}
+.bnav-item.active svg{stroke:#fff;fill:#fff}
+.bnav-avatar{width:24px;height:24px;border-radius:50%;background:var(--ig-gradient);padding:1.5px;display:flex;align-items:center;justify-content:center}
+.bnav-avatar-inner{width:19px;height:19px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;font-size:.5rem}
+</style>
+</head>
+<body>
+<canvas id="stars-canvas"></canvas>
+
+<div class="app">
+
+  <!-- TOP BAR -->
+  <div class="ig-topbar">
+    <div class="ig-logo">Instagram</div>
+    <div class="topbar-icons">
+      <svg viewBox="0 0 24 24"><path d="M20.57 14.86L22 13.43 20.57 12 17 15.57 8.43 7 12 3.43 10.57 2 9.14 3.43 7.71 2 5.57 4.14 4.14 2.71 2.71 4.14l1.43 1.43L2 7.71l1.43 1.43L2 10.57 3.43 12 7 8.43 15.57 17 12 20.57 13.43 22l1.43-1.43L16.29 22l2.14-2.14 1.43 1.43 1.43-1.43-1.43-1.43L22 16.29l-1.43-1.43z"/></svg>
+      <svg viewBox="0 0 24 24"><path d="M22 16.75V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v16l4-4h14a2 2 0 0 0 2-2z"/></svg>
+    </div>
+  </div>
+
+  <!-- STORIES -->
+  <div class="stories-bar">
+    <div class="story-item">
+      <div class="story-ring">
+        <div class="story-inner logo-story" style="font-size:1.4rem">🌟</div>
+      </div>
+      <span class="story-label">Tu historia</span>
+    </div>
+    <div class="story-item" onclick="openStory('viaje')">
+      <div class="story-ring">
+        <div class="story-inner">🏛️</div>
+      </div>
+      <span class="story-label">Altea</span>
+    </div>
+    <div class="story-item" onclick="openStory('estrellas')">
+      <div class="story-ring">
+        <div class="story-inner">✨</div>
+      </div>
+      <span class="story-label">Estrellas</span>
+    </div>
+    <div class="story-item" onclick="openStory('tabarca')">
+      <div class="story-ring">
+        <div class="story-inner">🏝️</div>
+      </div>
+      <span class="story-label">Tabarca</span>
+    </div>
+    <div class="story-item" onclick="openStory('buceo')">
+      <div class="story-ring">
+        <div class="story-inner">🤿</div>
+      </div>
+      <span class="story-label">Buceo</span>
+    </div>
+    <div class="story-item" onclick="openStory('aitana')">
+      <div class="story-ring">
+        <div class="story-inner">⛰️</div>
+      </div>
+      <span class="story-label">Aitana</span>
+    </div>
+    <div class="story-item" onclick="openStory('gastronomia')">
+      <div class="story-ring">
+        <div class="story-inner">🍷</div>
+      </div>
+      <span class="story-label">Gastro</span>
+    </div>
+  </div>
+
+  <!-- PROFILE -->
+  <div class="profile">
+    <div class="profile-top">
+      <div class="profile-avatar">
+        <div class="avatar-inner" style="font-size:2.2rem">🌟</div>
+      </div>
+      <div class="profile-stats">
+        <div class="pstat"><span class="pstat-num">9</span><span class="pstat-label">publicaciones</span></div>
+        <div class="pstat"><span class="pstat-num">1.248</span><span class="pstat-label">seguidores</span></div>
+        <div class="pstat"><span class="pstat-num">387</span><span class="pstat-label">seguidos</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="profile-info">
+    <div class="profile-name">DARALTEA TRAVEL ✦</div>
+    <div class="profile-category">🏢 Agencia de viajes</div>
+    <div class="profile-bio">
+      ✨ Astroturismo en la Costa Blanca<br>
+      🏛️ Altea · Sierra Aitana · Isla Tabarca<br>
+      🌊 Donde el mar y el cielo se encuentran<br>
+      📍 Av. Jaime I, nº13 · Altea, Alicante<br>
+      📞 <a href="tel:654321123">654 321 123</a> · <a href="mailto:info@daraltea.com">info@daraltea.com</a>
+    </div>
+    <div class="profile-link">
+      <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+      daraltea.com
+    </div>
+  </div>
+
+  <div class="profile-actions">
+    <button class="btn-follow" onclick="toggleFollow(this)">Seguir</button>
+    <button class="btn-msg">Mensaje</button>
+    <button class="btn-more">▾</button>
+  </div>
+
+  <!-- HIGHLIGHTS -->
+  <div class="highlights">
+    <div class="highlight">
+      <div class="hl-ring">🌃</div>
+      <span class="hl-label">El Viaje</span>
+    </div>
+    <div class="highlight">
+      <div class="hl-ring">🔭</div>
+      <span class="hl-label">Astro</span>
+    </div>
+    <div class="highlight">
+      <div class="hl-ring">🏛️</div>
+      <span class="hl-label">Altea</span>
+    </div>
+    <div class="highlight">
+      <div class="hl-ring">🏝️</div>
+      <span class="hl-label">Tabarca</span>
+    </div>
+    <div class="highlight">
+      <div class="hl-ring">🤿</div>
+      <span class="hl-label">Actividades</span>
+    </div>
+    <div class="highlight">
+      <div class="hl-ring">🍷</div>
+      <span class="hl-label">Gastro</span>
+    </div>
+    <div class="highlight">
+      <div class="hl-ring">💰</div>
+      <span class="hl-label">Precios</span>
+    </div>
+    <div class="highlight">
+      <div class="hl-ring">📞</div>
+      <span class="hl-label">Reservas</span>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <div class="tab active" id="tab-grid" onclick="switchTab('grid')">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+    </div>
+    <div class="tab" id="tab-reel" onclick="switchTab('reel')">
+      <svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+    </div>
+    <div class="tab" id="tab-tag" onclick="switchTab('tag')">
+      <svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+    </div>
+  </div>
+
+  <!-- GRID POSTS -->
+  <div class="grid" id="grid-view">
+
+    <div class="grid-item p1" onclick="openPost(0)">
+      <div class="grid-emoji">🌌</div>
+      <div class="grid-overlay">
+        <div class="overlay-stat">❤️ 312</div>
+        <div class="overlay-stat">💬 28</div>
+      </div>
+      <div class="grid-label">Estrellas del Mediterráneo</div>
+    </div>
+
+    <div class="grid-item p2" onclick="openPost(1)">
+      <div class="grid-emoji">🏛️</div>
+      <div class="grid-overlay">
+        <div class="overlay-stat">❤️ 287</div>
+        <div class="overlay-stat">💬 19</div>
+      </div>
+      <div class="grid-label">Altea Casco Antiguo</div>
+    </div>
+
+    <div class="grid-item p3" onclick="openPost(2)">
+      <div class="grid-emoji">🤿</div>
+      <div class="grid-overlay">
+        <div class="overlay-stat">❤️ 245</div>
+        <div class="overlay-stat">💬 31</div>
+      </div>
+      <div class="grid-label">Bautismo Buceo</div>
+    </div>
+
+    <div class="grid-item p4" onclick="openPost(3)">
+      <div class="grid-emoji">🏝️</div>
+      <div class="grid-overlay">
+        <div class="overlay-stat">❤️ 401</div>
+        <div class="overlay-stat">💬 44</div>
+      </div>
+      <div class="grid-label">Isla de Tabarca</div>
+    </div>
+
+    <div class="grid-item p5" onclick="openPost(4)">
+      <div class="grid-emoji">⛰️</div>
+      <div class="grid-overlay">
+        <div class="overlay-stat">❤️ 198</div>
+        <div class="overlay-stat">💬 15</div>
+      </div>
+      <div class="grid-label">Sierra de Aitana</div>
+    </div>
+
+    <div class="grid-item p6" onclick="openPost(5)">
+      <div class="grid-emoji">🍷</div>
+      <div class="grid-overlay">
+        <div class="overlay-stat">❤️ 223</div>
+        <div class="overlay-stat">💬 22</div>
+      </div>
+      <div class="grid-label">Cata Vinos DO Alicante</div>
+    </div>
+
+    <div class="grid-item p7" onclick="openPost(6)">
+      <div class="grid-emoji">🚣</div>
+      <div class="grid-overlay">
+        <div class="overlay-stat">❤️ 176</div>
+        <div class="overlay-stat">💬 18</div>
+      </div>
+      <div class="grid-label">Kayak al Amanecer</div>
+    </div>
+
+    <div class="grid-item p8" onclick="openPost(7)">
+      <div class="grid-emoji">📸</div>
+      <div class="grid-overlay">
+        <div class="overlay-stat">❤️ 334</div>
+        <div class="overlay-stat">💬 37</div>
+      </div>
+      <div class="grid-label">Astrofotografía</div>
+    </div>
+
+    <div class="grid-item p9" onclick="openPost(8)">
+      <div class="grid-emoji">🍽️</div>
+      <div class="grid-overlay">
+        <div class="overlay-stat">❤️ 191</div>
+        <div class="overlay-stat">💬 14</div>
+      </div>
+      <div class="grid-label">Cocina Mediterránea</div>
+    </div>
+
+  </div>
+
+  <!-- CONTACT BAR -->
+  <div class="gold-bar" style="margin-top:1rem"></div>
+  <div class="contact-bar">
+    <div class="contact-row">
+      <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      Av. Jaime I, nº 13 · 03590 Altea, Alicante
+    </div>
+    <div class="contact-row">
+      <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.18h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      <a href="tel:654321123">654 321 123</a>
+    </div>
+    <div class="contact-row">
+      <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      <a href="mailto:info@daraltea.com">info@daraltea.com</a>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav">
+    <div class="bnav-item active">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    </div>
+    <div class="bnav-item">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </div>
+    <div class="bnav-item">
+      <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="2" y1="17" x2="7" y2="17"/><line x1="17" y1="7" x2="22" y2="7"/><line x1="17" y1="17" x2="22" y2="17"/></svg>
+    </div>
+    <div class="bnav-item">
+      <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+    </div>
+    <div class="bnav-item">
+      <div class="bnav-avatar">
+        <div class="bnav-avatar-inner">🌟</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- POST MODAL -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal-box" id="modal-box">
+    <div class="modal-header">
+      <div class="modal-avatar">
+        <div class="modal-avatar-inner">🌟</div>
+      </div>
+      <div class="modal-user">
+        <strong>daraltea_travel</strong>
+        <span id="modal-location">Altea, Alicante</span>
+      </div>
+      <button class="modal-close" onclick="closeModalBtn()">✕</button>
+    </div>
+    <div class="modal-img" id="modal-img">
+      <div style="font-size:5rem" id="modal-emoji">🌌</div>
+    </div>
+    <div class="modal-caption-area">
+      <div class="modal-actions">
+        <button id="like-btn" onclick="toggleLike(this)">
+          <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
+        <button>
+          <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </button>
+        <button>
+          <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+      <div class="modal-likes" id="modal-likes">312 Me gusta</div>
+      <div class="modal-text" id="modal-text"></div>
+      <div class="modal-hashtags" id="modal-hashtags"></div>
+      <div class="modal-date" id="modal-date">Hace 2 días</div>
+    </div>
+    <div class="modal-comments" id="modal-comments"></div>
+    <div class="add-comment">
+      <input type="text" placeholder="Añade un comentario..." id="comment-input">
+      <button onclick="addComment()">Publicar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// STARS
+(function(){
+  const cv=document.getElementById('stars-canvas'),ctx=cv.getContext('2d');
+  let W,H,stars=[];
+  function resize(){W=cv.width=window.innerWidth;H=cv.height=window.innerHeight}
+  resize();window.addEventListener('resize',resize);
+  function init(){
+    stars=[];const n=Math.floor(W*H/1800);
+    for(let i=0;i<n;i++)stars.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.5+.3,a:Math.random(),da:(Math.random()*.008+.003)*(Math.random()>.5?1:-1),c:Math.random()>.65?'#C9A84C':'#fff'});
+  }
+  init();window.addEventListener('resize',init);
+  function loop(){
+    ctx.clearRect(0,0,W,H);
+    for(const s of stars){
+      s.a+=s.da;if(s.a>1||s.a<.1)s.da*=-1;
+      ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle=s.c;ctx.globalAlpha=s.a;ctx.fill();
+    }
+    ctx.globalAlpha=1;
+    requestAnimationFrame(loop);
+  }
+  loop();
+})();
+
+// POSTS DATA
+const posts = [
+  {emoji:'🌌',bg:'linear-gradient(135deg,#0f2a4a,#0d1b2a)',location:'Sierra de Aitana, 1558m',likes:312,date:'Hace 2 días',
+   text:'<strong>daraltea_travel</strong> 300 noches despejadas al año. Aquí, la Vía Láctea no es una foto de internet: es el techo de tu habitación 🌌✨ Nuestro viaje estrella "Estrellas del Mediterráneo" te lleva a los cielos más puros de la Costa Blanca.',
+   hashtags:'#Astroturismo #CostaBlanca #Altea #EstrellasMediterráneo #VíaLáctea #SierraAitana #TurismoAlicante #Astronomía',
+   comments:[{a:'🌟',u:'maria_viajera',t:'¡Increíble! ¿Cuándo es el próximo viaje?',time:'1h'},{a:'🏖️',u:'costa_blanca_fan',t:'Llevo años queriendo ver la Vía Láctea así de cerca',time:'3h'}]},
+  {emoji:'🏛️',bg:'linear-gradient(135deg,#1a3a5c,#0a1520)',location:'Altea, Alicante',likes:287,date:'Hace 4 días',
+   text:'<strong>daraltea_travel</strong> El casco antiguo de Altea, con su emblemática cúpula azul, te roba el corazón al primer vistazo 💙 Calles empedradas, flores en cada balcón y vistas al Mediterráneo que quitan el aliento. Éste es nuestro hogar.',
+   hashtags:'#Altea #CúpulaAzul #CostaBlanca #PueblosBonitos #AlteaOldTown #Alicante #Mediterráneo #EspañaRural',
+   comments:[{a:'🏛️',u:'travel_españa',t:'Altea es uno de los pueblos más bonitos de España',time:'2h'},{a:'📸',u:'fotografia_viaje',t:'Sueño con fotografiar esa cúpula azul',time:'5h'}]},
+  {emoji:'🤿',bg:'linear-gradient(135deg,#0a1e30,#0d2a1a)',location:'Fondo marino, Costa Blanca',likes:245,date:'Hace 6 días',
+   text:'<strong>daraltea_travel</strong> ¿Tu primer contacto con el fondo del mar? Nuestro bautismo de buceo en aguas cristalinas de la Costa Blanca te abrirá un mundo desconocido 🤿🐟 Visibilidad de hasta 20 metros. Fauna marina espectacular.',
+   hashtags:'#Buceo #CostaBlanca #BautismoBuceo #Snorkel #MarMediterráneo #Tabarca #AguasCristalinas #Submarinismo',
+   comments:[{a:'🤿',u:'buceo_spain',t:'¡El mejor bautismo que he hecho en toda España!',time:'4h'},{a:'🐠',u:'underwater_life',t:'Las aguas de Tabarca son increíbles',time:'7h'}]},
+  {emoji:'🏝️',bg:'linear-gradient(135deg,#0a2a3a,#0d1b2a)',location:'Isla de Tabarca · Reserva Marina',likes:401,date:'Hace 1 semana',
+   text:'<strong>daraltea_travel</strong> La única isla habitada de la Comunidad Valenciana y la primera Reserva Marina de España 🏝️ Desde 1986, sus aguas protegen una biodiversidad extraordinaria. Incluido en nuestro viaje estrella.',
+   hashtags:'#IslaTabarca #ReservaMarina #Alicante #CostaBlanca #IslaVirginal #EcologíaMarina #BioMarino #TurismoResponsable',
+   comments:[{a:'🌊',u:'mar_y_sol',t:'Tabarca es un paraíso escondido',time:'2h'},{a:'🏝️',u:'isla_lovers',t:'El agua allí es de otro mundo',time:'1 día'}]},
+  {emoji:'⛰️',bg:'linear-gradient(135deg,#0d2a1a,#0a1520)',location:'Sierra de Aitana · 1.558m',likes:198,date:'Hace 1 semana',
+   text:'<strong>daraltea_travel</strong> Desde los 1.558 metros de la Sierra de Aitana, el horizonte se funde con el Mediterráneo ⛰️🌊 El punto más alto de la provincia de Alicante y el mejor mirador natural para la observación astronómica de la región.',
+   hashtags:'#SierraAitana #Montaña #CostaBlanca #Senderismo #Alicante #NocheEstrellada #Astrofotografía #Astroturismo',
+   comments:[{a:'⛰️',u:'senderismo_cv',t:'Aitana de noche es algo que no olvidarás nunca',time:'3h'},{a:'🔭',u:'astro_lovers',t:'El cielo desde ahí arriba es espectacular',time:'5h'}]},
+  {emoji:'🍷',bg:'linear-gradient(135deg,#2a1a0a,#0d1b2a)',location:'Altea, Bodega DO Alicante',likes:223,date:'Hace 2 semanas',
+   text:'<strong>daraltea_travel</strong> Vinos de la Denominación de Origen Alicante bajo un cielo de estrellas 🍷✨ Nuestra cata maridada con productos locales es el broche de oro perfecto para una noche mágica en la Costa Blanca.',
+   hashtags:'#DOAlicante #CataVinos #Gastronomía #VinoCultura #Alicante #CostaBlanca #Maridaje #VinosEspaña',
+   comments:[{a:'🍇',u:'vinos_spain',t:'Los vinos de Alicante son una joya desconocida',time:'1 día'},{a:'🥂',u:'sommelier_es',t:'Gran elección incluir esto en el viaje',time:'2 días'}]},
+  {emoji:'🚣',bg:'linear-gradient(135deg,#0a2a3a,#0d1b2a)',location:'Amanecer · Costa Blanca',likes:176,date:'Hace 2 semanas',
+   text:'<strong>daraltea_travel</strong> El Mediterráneo en calma, los primeros rayos de sol tiñendo el agua de oro y el silencio absoluto 🌅 Nuestro kayak al amanecer es una experiencia que literalmente cambia la perspectiva de las cosas.',
+   hashtags:'#KayakMediterráneo #Amanecer #CostaBlanca #Kayak #AguasCalmas #Altea #Remo #ExperienciaVital',
+   comments:[{a:'🚣',u:'kayak_spain',t:'¡Esto es lo que me faltaba hacer en la vida!',time:'3 días'},{a:'🌅',u:'sunrise_lovers',t:'Kayak al amanecer en el Mediterráneo 😍',time:'4 días'}]},
+  {emoji:'📸',bg:'linear-gradient(135deg,#1e0a2a,#0d1b2a)',location:'Astrofotografía · Costa Blanca',likes:334,date:'Hace 3 semanas',
+   text:'<strong>daraltea_travel</strong> Aprende a fotografiar el cielo nocturno con nuestros expertos en astrofotografía 📸🌌 Desde configurar tu cámara hasta conseguir la foto perfecta de la Vía Láctea. Sin experiencia previa necesaria.',
+   hashtags:'#Astrofotografía #FotografíaNocturna #VíaLáctea #Fotografía #CostaBlanca #SkyPhotography #NightSky #AstroPhoto',
+   comments:[{a:'📷',u:'fotografia_astro',t:'Sueño con hacer esto. ¿Cuándo es el próximo taller?',time:'5 días'},{a:'🌌',u:'milkyway_es',t:'La mejor inversión que puedes hacer',time:'6 días'}]},
+  {emoji:'🍽️',bg:'linear-gradient(135deg,#0f2a4a,#1a1a0a)',location:'Taller Cocina Mediterránea',likes:191,date:'Hace 3 semanas',
+   text:'<strong>daraltea_travel</strong> Productos frescos de temporada, aceite de oliva virgen extra y los secretos de la cocina mediterránea de toda la vida 🍽️🫒 Aprende a cocinar como en la Costa Blanca en nuestro taller gastronómico.',
+   hashtags:'#CocinamediterráNea #Gastronomía #CostaBlanca #Foodie #MediterraneanFood #RecetasEspaña #TallerCocina #Alicante',
+   comments:[{a:'👨‍🍳',u:'chef_mediterraneo',t:'La cocina de la Costa Blanca es de las mejores de España',time:'1 semana'},{a:'🫒',u:'aceite_spain',t:'Incluir un taller de cocina es una idea genial',time:'1 semana'}]}
+];
+
+function openPost(i){
+  const p=posts[i];
+  const bg=['p1','p2','p3','p4','p5','p6','p7','p8','p9'];
+  const colors=['linear-gradient(135deg,#0f2a4a,#0d1b2a)','linear-gradient(135deg,#1a3a5c,#0a1520)','linear-gradient(135deg,#0a1e30,#0d2a1a)','linear-gradient(135deg,#0a2a3a,#0d1b2a)','linear-gradient(135deg,#0d2a1a,#0a1520)','linear-gradient(135deg,#2a1a0a,#0d1b2a)','linear-gradient(135deg,#0a2a3a,#0d1b2a)','linear-gradient(135deg,#1e0a2a,#0d1b2a)','linear-gradient(135deg,#0f2a4a,#1a1a0a)'];
+  document.getElementById('modal-img').style.background=colors[i];
+  document.getElementById('modal-emoji').textContent=p.emoji;
+  document.getElementById('modal-location').textContent=p.location;
+  document.getElementById('modal-likes').textContent=p.likes+' Me gusta';
+  document.getElementById('modal-text').innerHTML=p.text;
+  document.getElementById('modal-hashtags').textContent=p.hashtags;
+  document.getElementById('modal-date').textContent=p.date;
+  document.getElementById('like-btn').classList.remove('liked');
+  const cc=document.getElementById('modal-comments');
+  cc.innerHTML=p.comments.map(c=>`<div class="comment"><div class="comment-avatar">${c.a}</div><div class="comment-body"><strong>${c.u}</strong> ${c.t} <span>${c.time}</span></div></div>`).join('');
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal(e){if(e.target===document.getElementById('modal'))closeModalBtn()}
+function closeModalBtn(){document.getElementById('modal').classList.remove('open')}
+
+function toggleLike(btn){
+  btn.classList.toggle('liked');
+  const likes=document.getElementById('modal-likes');
+  const cur=parseInt(likes.textContent);
+  likes.textContent=(btn.classList.contains('liked')?cur+1:cur-1)+' Me gusta';
+}
+
+function addComment(){
+  const inp=document.getElementById('comment-input');
+  if(!inp.value.trim())return;
+  const cc=document.getElementById('modal-comments');
+  cc.innerHTML+=`<div class="comment"><div class="comment-avatar">👤</div><div class="comment-body"><strong>tú</strong> ${inp.value} <span>Ahora</span></div></div>`;
+  inp.value='';
+  cc.scrollTop=cc.scrollHeight;
+}
+
+function toggleFollow(btn){
+  if(btn.textContent==='Seguir'){btn.textContent='Siguiendo';btn.style.background='transparent';btn.style.border='1px solid #333';btn.style.color='#fff'}
+  else{btn.textContent='Seguir';btn.style.background='var(--ig-gradient)';btn.style.border='none';btn.style.color='#fff'}
+}
+
+function openStory(type){
+  const stories={
+    viaje:'🏛️ ALTEA — El pueblo más bonito de la Costa Blanca te espera. Calles empedradas, cúpula azul y el Mediterráneo al fondo.',
+    estrellas:'🌌 ASTROTURISMO — 300 noches despejadas al año. Sierra de Aitana, 1558m. El cielo más limpio del Mediterráneo.',
+    tabarca:'🏝️ ISLA DE TABARCA — Primera Reserva Marina de España. Aguas cristalinas. Fauna submarina única.',
+    buceo:'🤿 BAUTISMO DE BUCEO — Tu primer contacto con el fondo del mar. Sin experiencia necesaria. Visibilidad 20m.',
+    aitana:'⛰️ SIERRA DE AITANA — 1558 metros de altura. El mejor mirador natural de Alicante.',
+    gastronomia:'🍷 GASTRONOMÍA — Vinos DO Alicante, cocina mediterránea y productos locales de temporada.'
+  };
+  alert('📱 Historia de @daraltea_travel\n\n'+stories[type]+'\n\n📍 Av. Jaime I, nº13 · Altea\n📞 654 321 123');
+}
+
+function switchTab(tab){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  if(tab!=='grid'){
+    alert('📱 En la versión completa de Instagram verías aquí los Reels y etiquetas de @daraltea_travel');
+  }
+}
+</script>
+</body>
+</html>

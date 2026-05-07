@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daraltea Travel · Folleto «Estrellas del Mediterráneo»</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0D1B2A; --navy2:#0a1520; --navym:#0f2540;
+  --gold:#C9A84C; --gold2:#e8c97a; --gold3:rgba(201,168,76,.15);
+  --blue:#2176AE; --white:#F5F5F0; --muted:rgba(245,245,240,.55);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--navy);color:var(--white);font-family:'Lato',sans-serif;overflow-x:hidden;cursor:default}
+
+/* ── PRINT STYLES ── */
+@media print{
+  body{background:#fff;color:#111}
+  #cv,#scroll-hint{display:none}
+  .section{break-inside:avoid;page-break-inside:avoid}
+  .hero{background:#0D1B2A!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .btn-print{display:none}
+  .print-note{display:block!important}
+}
+.print-note{display:none;font-size:.75rem;text-align:center;color:#666;padding:.5rem}
+
+/* ── STARS ── */
+#cv{position:fixed;inset:0;z-index:0;pointer-events:none}
+.rel{position:relative;z-index:1}
+
+/* ── PRINT BUTTON ── */
+.btn-print{
+  position:fixed;bottom:2rem;right:2rem;z-index:200;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:var(--navy);border:none;border-radius:50px;padding:.7rem 1.8rem;
+  font-family:'Cinzel',serif;font-size:.78rem;font-weight:700;letter-spacing:.12em;
+  cursor:pointer;box-shadow:0 4px 20px rgba(201,168,76,.4);transition:all .3s;
+}
+.btn-print:hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(201,168,76,.6)}
+
+/* ══ HERO ══════════════════════════════════════════════════════════════════ */
+.hero{
+  min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:4rem 2rem;position:relative;overflow:hidden;
+  background:radial-gradient(ellipse 80% 60% at 50% 30%,rgba(33,118,174,.18),transparent 70%);
+}
+.hero::before{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:200px;
+  background:linear-gradient(to top,var(--navy),transparent);
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:.6rem;
+  border:1px solid rgba(201,168,76,.35);border-radius:50px;
+  padding:.35rem 1.2rem;font-size:.68rem;letter-spacing:.2em;color:var(--gold);
+  margin-bottom:2rem;backdrop-filter:blur(8px);
+}
+.hero-star-row{display:flex;gap:1.5rem;justify-content:center;margin-bottom:1.5rem;}
+.hero-star{font-size:1.1rem;color:var(--gold);opacity:.7;animation:tw 3s ease-in-out infinite;}
+.hero-star:nth-child(2){animation-delay:.5s}.hero-star:nth-child(3){animation-delay:1s}.hero-star:nth-child(4){animation-delay:1.5s}.hero-star:nth-child(5){animation-delay:2s}
+@keyframes tw{0%,100%{opacity:.3;transform:scale(.9)}50%{opacity:1;transform:scale(1.1)}}
+.brand-main{font-family:'Cinzel',serif;font-size:clamp(3rem,8vw,6rem);font-weight:900;color:var(--gold);letter-spacing:.08em;line-height:1;margin-bottom:.3rem}
+.brand-travel{font-family:'Cinzel',serif;font-size:clamp(1.2rem,3vw,2rem);font-weight:400;letter-spacing:.5em;color:var(--white);margin-bottom:2rem}
+.hero-claim{font-family:'Cormorant Garamond',serif;font-size:clamp(1.3rem,3.5vw,2rem);font-weight:300;font-style:italic;color:rgba(245,245,240,.8);margin-bottom:.8rem;max-width:600px}
+.hero-sub{font-size:.85rem;letter-spacing:.15em;color:var(--gold);text-transform:uppercase;margin-bottom:3rem}
+.hero-pills{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:center;margin-bottom:3rem}
+.pill{
+  background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.25);
+  border-radius:50px;padding:.4rem 1rem;font-size:.78rem;color:var(--gold);letter-spacing:.06em;
+}
+.hero-price-box{
+  background:rgba(13,27,42,.8);border:1px solid rgba(201,168,76,.3);
+  border-radius:20px;padding:1.5rem 2.5rem;backdrop-filter:blur(12px);
+  display:inline-flex;flex-direction:column;align-items:center;
+}
+.from{font-size:.72rem;letter-spacing:.2em;color:var(--muted)}
+.price{font-family:'Cinzel',serif;font-size:3.5rem;font-weight:900;color:var(--gold);line-height:1}
+.price-detail{font-size:.8rem;color:var(--muted);margin-top:.2rem}
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);font-size:.65rem;letter-spacing:.2em;color:var(--muted);animation:bounce 2s ease-in-out infinite;}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+
+/* ══ GENERAL SECTION STYLES ═════════════════════════════════════════════════ */
+.section{padding:5rem 2rem;max-width:1100px;margin:0 auto}
+.sec-label{font-family:'Cinzel',serif;font-size:.65rem;letter-spacing:.3em;color:var(--gold);margin-bottom:1rem;display:flex;align-items:center;gap:.8rem}
+.sec-label::after{content:'';flex:1;height:1px;background:rgba(201,168,76,.2)}
+.sec-title{font-family:'Cormorant Garamond',serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:300;line-height:1.2;margin-bottom:.6rem}
+.sec-title strong{color:var(--gold);font-weight:600}
+.sec-desc{color:var(--muted);font-size:.9rem;line-height:1.8;max-width:620px}
+.gold-rule{height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:4rem 0}
+
+/* ══ DESTINOS GRID ══════════════════════════════════════════════════════════ */
+.dest-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;margin-top:3rem}
+.dest-card{
+  background:rgba(15,37,64,.7);border:1px solid rgba(201,168,76,.12);
+  border-radius:20px;overflow:hidden;transition:all .3s;cursor:default;
+}
+.dest-card:hover{border-color:rgba(201,168,76,.35);transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,.4)}
+.dest-visual{
+  height:200px;display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+  background:linear-gradient(135deg,var(--navy2),var(--navym));
+}
+.dest-emoji{font-size:5rem;filter:drop-shadow(0 0 20px rgba(201,168,76,.4))}
+.dest-badge{
+  position:absolute;top:1rem;right:1rem;
+  background:rgba(201,168,76,.9);border-radius:50px;padding:.2rem .7rem;
+  font-size:.62rem;font-weight:700;color:var(--navy);letter-spacing:.08em;
+}
+.dest-body{padding:1.5rem}
+.dest-km{font-size:.7rem;letter-spacing:.15em;color:var(--gold);margin-bottom:.4rem}
+.dest-name{font-family:'Cinzel',serif;font-size:1.2rem;color:var(--white);margin-bottom:.6rem}
+.dest-desc{font-size:.82rem;color:var(--muted);line-height:1.6;margin-bottom:1rem}
+.dest-tags{display:flex;flex-wrap:wrap;gap:.4rem}
+.dest-tag{background:rgba(33,118,174,.15);border:1px solid rgba(33,118,174,.25);border-radius:50px;padding:.2rem .6rem;font-size:.68rem;color:var(--blue)}
+
+/* ══ ITINERARIO ══════════════════════════════════════════════════════════════ */
+.itin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;margin-top:2.5rem}
+.itin-day{
+  background:rgba(15,37,64,.6);border:1px solid rgba(201,168,76,.12);
+  border-radius:16px;padding:1.5rem;transition:all .3s;
+}
+.itin-day:hover{border-color:rgba(201,168,76,.3)}
+.itin-day-num{font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.2em;color:var(--gold);margin-bottom:.4rem}
+.itin-day-title{font-family:'Cinzel',serif;font-size:.95rem;color:var(--white);margin-bottom:.8rem;line-height:1.3}
+.itin-items{list-style:none;display:flex;flex-direction:column;gap:.4rem}
+.itin-item{display:flex;gap:.5rem;font-size:.8rem;color:var(--muted);align-items:flex-start}
+.itin-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:.5rem}
+
+/* ══ INCLUYE / NO INCLUYE ════════════════════════════════════════════════════ */
+.inc-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:2.5rem}
+@media(max-width:600px){.inc-grid{grid-template-columns:1fr}}
+.inc-box{background:rgba(15,37,64,.6);border-radius:16px;padding:1.5rem}
+.inc-box.yes{border:1px solid rgba(80,180,80,.25)}
+.inc-box.no{border:1px solid rgba(180,60,60,.2)}
+.inc-title{font-family:'Cinzel',serif;font-size:.75rem;letter-spacing:.15em;margin-bottom:1rem}
+.inc-box.yes .inc-title{color:#6abe6a}
+.inc-box.no .inc-title{color:#d06060}
+.inc-list{list-style:none;display:flex;flex-direction:column;gap:.4rem}
+.inc-item{font-size:.82rem;color:var(--muted);display:flex;gap:.5rem;align-items:flex-start}
+.inc-ico{flex-shrink:0}
+
+/* ══ PRECIOS ════════════════════════════════════════════════════════════════ */
+.precio-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.2rem;margin-top:2.5rem}
+.precio-card{
+  background:rgba(15,37,64,.7);border:1px solid rgba(201,168,76,.15);
+  border-radius:20px;padding:2rem 1.5rem;text-align:center;transition:all .3s;position:relative;overflow:hidden;
+}
+.precio-card:hover{border-color:rgba(201,168,76,.4);transform:translateY(-4px)}
+.precio-card.featured{border-color:var(--gold);background:rgba(201,168,76,.07)}
+.precio-card.featured::before{content:'MÁS POPULAR';position:absolute;top:12px;right:-24px;background:var(--gold);color:var(--navy);font-size:.55rem;font-weight:700;letter-spacing:.12em;padding:.25rem 2rem;transform:rotate(30deg)}
+.temp-label{font-size:.7rem;letter-spacing:.2em;color:var(--gold);margin-bottom:.6rem}
+.temp-price{font-family:'Cinzel',serif;font-size:2.8rem;font-weight:900;color:var(--white);line-height:1}
+.temp-cur{font-size:1.4rem;vertical-align:super;color:var(--gold)}
+.temp-detail{font-size:.72rem;color:var(--muted);margin:.5rem 0 .8rem}
+.temp-months{font-size:.75rem;color:var(--muted);border-top:1px solid rgba(255,255,255,.07);padding-top:.8rem;margin-top:.5rem}
+
+/* ══ DESCUENTOS ════════════════════════════════════════════════════════════ */
+.desc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.8rem;margin-top:2rem}
+.desc-chip{
+  background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.2);
+  border-radius:12px;padding:1rem;text-align:center;
+}
+.desc-pct{font-family:'Cinzel',serif;font-size:1.8rem;font-weight:900;color:var(--gold);margin-bottom:.3rem}
+.desc-name{font-size:.75rem;color:var(--muted)}
+
+/* ══ MAPA / RUTA ═══════════════════════════════════════════════════════════ */
+.route-vis{
+  max-width:700px;margin:2.5rem auto 0;
+  background:rgba(15,37,64,.7);border:1px solid rgba(201,168,76,.15);
+  border-radius:20px;padding:2rem;
+}
+.route-stops{display:flex;flex-direction:column;gap:0}
+.route-stop{display:flex;gap:1.2rem;align-items:flex-start;padding:.8rem 0}
+.route-stop:not(:last-child){border-bottom:1px dashed rgba(201,168,76,.12)}
+.stop-circle{
+  width:44px;height:44px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:1.3rem;
+  background:rgba(201,168,76,.15);border:2px solid rgba(201,168,76,.3);
+}
+.stop-info{flex:1}
+.stop-name{font-family:'Cinzel',serif;font-size:.88rem;color:var(--white);margin-bottom:.2rem}
+.stop-detail{font-size:.76rem;color:var(--muted);line-height:1.5}
+.stop-transport{display:flex;align-items:center;gap:.5rem;margin-top:.3rem}
+.transport-pill{background:rgba(33,118,174,.15);border:1px solid rgba(33,118,174,.2);border-radius:50px;padding:.15rem .6rem;font-size:.65rem;color:var(--blue)}
+.route-line{width:2px;background:linear-gradient(to bottom,var(--gold),rgba(201,168,76,.2));margin:0 0 0 21px;height:24px}
+
+/* ══ GALERÍA NOCTURNA ════════════════════════════════════════════════════════ */
+.gal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem;margin-top:2rem}
+.gal-item{
+  border-radius:12px;overflow:hidden;position:relative;cursor:pointer;
+  aspect-ratio:1;display:flex;align-items:center;justify-content:center;
+  font-size:3.5rem;transition:transform .3s;
+  background:linear-gradient(135deg,var(--navy2),var(--navym));
+  border:1px solid rgba(201,168,76,.1);
+}
+.gal-item:hover{transform:scale(1.03)}
+.gal-item:nth-child(1){aspect-ratio:2;grid-column:span 2}
+.gal-item:nth-child(4){aspect-ratio:2;grid-column:span 2}
+.gal-overlay{position:absolute;inset:0;background:rgba(0,0,0,.3);opacity:0;transition:opacity .3s;display:flex;align-items:flex-end;padding:1rem}
+.gal-item:hover .gal-overlay{opacity:1}
+.gal-cap{font-size:.7rem;color:#fff;letter-spacing:.08em;font-family:'Cinzel',serif}
+
+/* ══ CONTACTO / CTA ══════════════════════════════════════════════════════════ */
+.cta-section{
+  text-align:center;padding:5rem 2rem;
+  background:radial-gradient(ellipse 70% 50% at 50% 50%,rgba(33,118,174,.1),transparent);
+}
+.cta-title{font-family:'Cinzel',serif;font-size:clamp(1.5rem,4vw,2.5rem);color:var(--gold);margin-bottom:1rem;letter-spacing:.06em}
+.cta-sub{font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--muted);font-style:italic;margin-bottom:2.5rem;max-width:500px;margin-left:auto;margin-right:auto}
+.cta-btns{display:flex;flex-wrap:wrap;gap:.8rem;justify-content:center;margin-bottom:3rem}
+.btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--navy);border:none;border-radius:50px;padding:.85rem 2.5rem;font-family:'Cinzel',serif;font-size:.82rem;font-weight:700;letter-spacing:.12em;cursor:pointer;transition:all .3s;box-shadow:0 0 24px rgba(201,168,76,.3)}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(201,168,76,.5)}
+.btn-outline{background:transparent;color:var(--white);border:1px solid rgba(245,245,240,.25);border-radius:50px;padding:.85rem 2.5rem;font-family:'Cinzel',serif;font-size:.82rem;letter-spacing:.12em;cursor:pointer;transition:all .3s}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold)}
+.contact-strip{display:flex;flex-wrap:wrap;gap:1.5rem;justify-content:center;font-size:.82rem;color:var(--muted)}
+.contact-strip a{color:var(--gold);text-decoration:none}
+.contact-item{display:flex;align-items:center;gap:.4rem}
+
+/* ══ FOOTER ══════════════════════════════════════════════════════════════════ */
+footer{
+  border-top:1px solid rgba(201,168,76,.1);padding:2rem;text-align:center;
+  font-size:.7rem;color:var(--muted);letter-spacing:.05em;line-height:2;
+}
+.footer-brand{font-family:'Cinzel',serif;font-size:.85rem;color:var(--gold);margin-bottom:.4rem}
+</style>
+</head>
+<body>
+<canvas id="cv"></canvas>
+
+<button class="btn-print" onclick="window.print()">🖨️ IMPRIMIR FOLLETO</button>
+
+<!-- ═══ HERO ═══ -->
+<div class="hero rel">
+  <div class="hero-badge">✦ DARALTEA TRAVEL · ASTROTURISMO COSTA BLANCA ✦</div>
+  <div class="hero-star-row">
+    <span class="hero-star">★</span><span class="hero-star">✦</span><span class="hero-star">★</span><span class="hero-star">✦</span><span class="hero-star">★</span>
+  </div>
+  <div class="brand-main">DARALTEA</div>
+  <div class="brand-travel">TRAVEL</div>
+  <div class="hero-claim">«Donde el mar y el cielo se encuentran»</div>
+  <div class="hero-sub">Astroturismo · Provincia de Alicante · Costa Blanca</div>
+  <div class="hero-pills">
+    <span class="pill">🏛️ Altea BIC</span>
+    <span class="pill">⛰️ Sierra Aitana 1.558 m</span>
+    <span class="pill">🏝️ Tabarca Starlight 2022</span>
+    <span class="pill">🌌 Vía Láctea</span>
+    <span class="pill">4 días / 3 noches</span>
+  </div>
+  <div class="hero-price-box">
+    <span class="from">DESDE</span>
+    <div class="price"><span class="temp-cur">€</span>649</div>
+    <div class="price-detail">por persona · habitación doble · todo incluido</div>
+  </div>
+  <div class="scroll-hint" id="scroll-hint">▼ &nbsp; descubre el viaje &nbsp; ▼</div>
+</div>
+
+<!-- ═══ DESTINOS ═══ -->
+<div class="section rel">
+  <div class="sec-label">Tres enclaves únicos</div>
+  <h2 class="sec-title">Un viaje diseñado para <strong>asombrar</strong></h2>
+  <p class="sec-desc">El viaje combinado «Estrellas del Mediterráneo» recorre tres enclaves irrepetibles de la provincia de Alicante, seleccionados por su complementariedad entre mar, montaña y patrimonio cultural.</p>
+
+  <div class="dest-grid">
+
+    <div class="dest-card">
+      <div class="dest-visual" style="background:linear-gradient(135deg,#0a1e38,#1a3a5c)">
+        <div class="dest-emoji">🏛️</div>
+        <span class="dest-badge">BIC 2013</span>
+      </div>
+      <div class="dest-body">
+        <div class="dest-km">BASE OPERATIVA · 50 km ALC</div>
+        <div class="dest-name">ALTEA</div>
+        <p class="dest-desc">Pueblo Blanco Mediterráneo de calles empedradas y la emblemática cúpula azul de la Iglesia de la Virgen del Consuelo. Declarado Bien de Interés Cultural. Gastronomía KM0 y vistas al Mar.</p>
+        <div class="dest-tags">
+          <span class="dest-tag">Alojamiento base</span>
+          <span class="dest-tag">Cultura</span>
+          <span class="dest-tag">Gastronomía</span>
+          <span class="dest-tag">Noche D1</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="dest-card">
+      <div class="dest-visual" style="background:linear-gradient(135deg,#050a14,#0d1b2a)">
+        <div class="dest-emoji">🌌</div>
+        <span class="dest-badge">Bortle 2</span>
+      </div>
+      <div class="dest-body">
+        <div class="dest-km">OBSERVACIÓN ASTRONÓMICA · 58 km Altea</div>
+        <div class="dest-name">SIERRA DE AITANA</div>
+        <p class="dest-desc">El punto más alto de la provincia (1.558 m). Alta calidad del cielo nocturno por altitud y baja contaminación lumínica. 300 noches despejadas al año. La Vía Láctea en todo su esplendor.</p>
+        <div class="dest-tags">
+          <span class="dest-tag">Observación D2</span>
+          <span class="dest-tag">Senderismo</span>
+          <span class="dest-tag">Astrofotografía</span>
+          <span class="dest-tag">Telescopio 8″</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="dest-card">
+      <div class="dest-visual" style="background:linear-gradient(135deg,#0a1e30,#0f2d40)">
+        <div class="dest-emoji">🏝️</div>
+        <span class="dest-badge">Starlight 2022</span>
+      </div>
+      <div class="dest-body">
+        <div class="dest-km">RESERVA MARINA · 84 km Altea</div>
+        <div class="dest-name">ISLA DE TABARCA</div>
+        <p class="dest-desc">Única isla habitada de la Comunitat Valenciana. Primera Reserva Marina de España (1986). Certificada Fundación Starlight 2022. Aguas cristalinas, fauna submarina única y cielo nocturno excepcional.</p>
+        <div class="dest-tags">
+          <span class="dest-tag">Ferry incluido</span>
+          <span class="dest-tag">Buceo/Snorkel</span>
+          <span class="dest-tag">Patrimonio s.XVIII</span>
+          <span class="dest-tag">Observación D3</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="gold-rule rel"></div>
+
+<!-- ═══ ITINERARIO ═══ -->
+<div class="section rel">
+  <div class="sec-label">Programa día a día</div>
+  <h2 class="sec-title">4 días de <strong>experiencias</strong> únicas</h2>
+  <p class="sec-desc">Cada jornada está diseñada para equilibrar actividad, contemplación y asombro. Grupos reducidos de máximo 20 personas para garantizar una experiencia personalizada.</p>
+
+  <div class="itin-grid">
+    <div class="itin-day">
+      <div class="itin-day-num">DÍA 01 · VIERNES TARDE</div>
+      <div class="itin-day-title">Llegada a Altea · Primera noche bajo las estrellas</div>
+      <ul class="itin-items">
+        <li class="itin-item"><span class="itin-dot"></span><span>Check-in hotel boutique 4★ · Kit astronómico de bienvenida</span></li>
+        <li class="itin-item"><span class="itin-dot"></span><span>Visita guiada casco antiguo de Altea (BIC)</span></li>
+        <li class="itin-item"><span class="itin-dot"></span><span>Cena mediterránea KM0 incluida · Vino DO Alicante</span></li>
+        <li class="itin-item"><span class="itin-dot"></span><span>Sesión astronómica introductoria en terraza del hotel · Telescopio 8″</span></li>
+      </ul>
+    </div>
+    <div class="itin-day" style="border-color:rgba(201,168,76,.25)">
+      <div class="itin-day-num">DÍA 02 · SÁBADO</div>
+      <div class="itin-day-title">Sierra Aitana · Observación profesional 🌌</div>
+      <ul class="itin-items">
+        <li class="itin-item"><span class="itin-dot"></span><span>Subida en minibús privado a los 1.558 m</span></li>
+        <li class="itin-item"><span class="itin-dot"></span><span>Senderismo PR-CV18 · Mirador 360° · Fauna endémica</span></li>
+        <li class="itin-item"><span class="itin-dot"></span><span>Picnic artesano en la cima · incluido</span></li>
+        <li class="itin-item"><span class="itin-dot"></span><span>Taller de astrofotografía nocturna</span></li>
+        <li class="itin-item"><span class="itin-dot"></span><span>Noche de observación: Vía Láctea, planetas, nebulosas</span></li>
+      </ul>
+    </div>
+    <div class="itin-day">
+      <div class="itin-day-num">DÍA 03 · DOMINGO</div>
+      <div class="itin-day-title">Isla de Tabarca · Mar y Starlight 🏝️</div>
+      <ul class="itin-items">
+        <li class="itin-item"><span class="itin-dot"></span><span>Ferry rápida Santa Pola → Tabarca (25 min) incluido</span></li>
+        <li class="itin-item"><span class="itin-dot"></span><span>Bautismo de buceo o snorkel · Instructor PADI incluido</span></li>
+        <li class="itin-item"><span class="itin-dot"></span><span>Visita al Conjunto Histórico-Artístico s.XVIII</span></li>
+        <li class="itin-item"><span class="itin-dot"></span><span>Cena de despedida: paella valenciana incluida</span></li>
+        <li class="itin-item"><span class="itin-dot"></span><span>Entrega Certificado Participante Starlight</span></li>
+      </ul>
+    </div>
+    <div class="itin-day">
+      <div class="itin-day-num">DÍA 04 · LUNES MAÑANA</div>
+      <div class="itin-day-title">Despedida · Hasta pronto, viajero estelar</div>
+      <ul class="itin-items">
+        <li class="itin-item"><span class="itin-dot"></span><span>Desayuno buffet · Check-out hotel</span></li>
+        <li class="itin-item"><span class="itin-dot"></span><span>Mercado artesanal de Altea (opcional)</span></li>
+        <li class="itin-item"><span class="itin-dot"></span><span>Transfer aeropuerto ALC incluido (salidas hasta 15:00h)</span></li>
+        <li class="itin-item"><span class="itin-dot"></span><span>Encuesta de satisfacción + código descuento 5%</span></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="gold-rule rel"></div>
+
+<!-- ═══ INCLUYE ═══ -->
+<div class="section rel">
+  <div class="sec-label">Lo que está incluido</div>
+  <h2 class="sec-title">Precio <strong>todo incluido</strong> sin sorpresas</h2>
+  <div class="inc-grid">
+    <div class="inc-box yes">
+      <div class="inc-title">✅ &nbsp; INCLUIDO EN EL PRECIO</div>
+      <ul class="inc-list">
+        <li class="inc-item"><span class="inc-ico">🏨</span><span>3 noches hotel boutique 4★ Altea (AD)</span></li>
+        <li class="inc-item"><span class="inc-ico">🚌</span><span>Minibús privado climatizado todos los trayectos</span></li>
+        <li class="inc-item"><span class="inc-ico">⛵</span><span>Ferry rápido Santa Pola ↔ Tabarca</span></li>
+        <li class="inc-item"><span class="inc-ico">✈️</span><span>Transfer aeropuerto ALC ↔ Altea</span></li>
+        <li class="inc-item"><span class="inc-ico">🍷</span><span>2 cenas incluidas (D1 mediterránea · D3 paella)</span></li>
+        <li class="inc-item"><span class="inc-ico">🧺</span><span>Picnic artesano en Sierra Aitana</span></li>
+        <li class="inc-item"><span class="inc-ico">🔭</span><span>Telescopio 8″ Celestron + kit astronómico personal</span></li>
+        <li class="inc-item"><span class="inc-ico">🤿</span><span>Bautismo de buceo o snorkel en Tabarca (instructor PADI)</span></li>
+        <li class="inc-item"><span class="inc-ico">🎓</span><span>Guía astronómica certificada (4 días)</span></li>
+        <li class="inc-item"><span class="inc-ico">🗺️</span><span>Guía local de Altea (Día 1)</span></li>
+        <li class="inc-item"><span class="inc-ico">🛡️</span><span>Seguro de viaje básico incluido</span></li>
+        <li class="inc-item"><span class="inc-ico">📜</span><span>Certificado participante Starlight</span></li>
+      </ul>
+    </div>
+    <div class="inc-box no">
+      <div class="inc-title">❌ &nbsp; NO INCLUIDO</div>
+      <ul class="inc-list">
+        <li class="inc-item"><span class="inc-ico">✈️</span><span>Vuelo o transporte hasta Alicante</span></li>
+        <li class="inc-item"><span class="inc-ico">🍽️</span><span>Almuerzos (Días 1–3) y cena D2</span></li>
+        <li class="inc-item"><span class="inc-ico">🐟</span><span>Comida en Tabarca (libre)</span></li>
+        <li class="inc-item"><span class="inc-ico">🎒</span><span>Gastos personales y propinas</span></li>
+        <li class="inc-item"><span class="inc-ico">📷</span><span>Alquiler cámara/objetivo gran angular</span></li>
+        <li class="inc-item"><span class="inc-ico">🔒</span><span>Seguro cancelación ampliado (+35 €)</span></li>
+        <li class="inc-item"><span class="inc-ico">🛏️</span><span>Supl. habitación individual (+120 €)</span></li>
+        <li class="inc-item"><span class="inc-ico">🇩🇪</span><span>Guía en alemán (+50 €/persona)</span></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="gold-rule rel"></div>
+
+<!-- ═══ PRECIOS ═══ -->
+<div class="section rel">
+  <div class="sec-label">Tarifas por temporada</div>
+  <h2 class="sec-title">El cielo que elijas tiene su <strong>mejor momento</strong></h2>
+  <p class="sec-desc">El precio varía según la calidad del cielo nocturno y la demanda turística. En temporada baja encontrarás los cielos más oscuros y grupos más íntimos.</p>
+
+  <div class="precio-grid">
+    <div class="precio-card">
+      <div class="temp-label">TEMPORADA BAJA</div>
+      <div class="temp-price"><span class="temp-cur">€</span>649</div>
+      <div class="temp-detail">por persona · hab. doble</div>
+      <ul style="list-style:none;font-size:.78rem;color:var(--muted);text-align:left;margin:.5rem 0">
+        <li>• Grupos más reducidos e íntimos</li>
+        <li>• Cielos excelentes (85% noches)</li>
+        <li>• Géminis 14 diciembre</li>
+        <li>• Todo el itinerario incluido</li>
+      </ul>
+      <div class="temp-months">Noviembre — Marzo</div>
+    </div>
+
+    <div class="precio-card featured">
+      <div class="temp-label">TEMPORADA MEDIA ⭐ RECOMENDADA</div>
+      <div class="temp-price"><span class="temp-cur">€</span>699</div>
+      <div class="temp-detail">por persona · hab. doble</div>
+      <ul style="list-style:none;font-size:.78rem;color:var(--muted);text-align:left;margin:.5rem 0">
+        <li>• Clima perfecto (15–25°C)</li>
+        <li>• Cielos estables (90% noches)</li>
+        <li>• Sin masificación estival</li>
+        <li>• Todo el itinerario incluido</li>
+      </ul>
+      <div class="temp-months">Abril–Junio · Octubre</div>
+    </div>
+
+    <div class="precio-card">
+      <div class="temp-label">TEMPORADA ALTA</div>
+      <div class="temp-price"><span class="temp-cur">€</span>749</div>
+      <div class="temp-detail">por persona · hab. doble</div>
+      <ul style="list-style:none;font-size:.78rem;color:var(--muted);text-align:left;margin:.5rem 0">
+        <li>• Perseidas 12 agosto</li>
+        <li>• Eclipses y eventos especiales</li>
+        <li>• Noche de San Juan</li>
+        <li>• Todo el itinerario incluido</li>
+      </ul>
+      <div class="temp-months">Julio · Agosto · Navidad</div>
+    </div>
+  </div>
+
+  <div style="text-align:center;font-size:.78rem;color:var(--muted);margin-top:1.2rem">
+    Supl. hab. individual: +120 € · Early Bird –10% (reserva >60 días) · Grupos (>6 pax): –10% · Repetidores: –5% · Asociaciones astronómicas: –10%
+  </div>
+
+  <div class="desc-grid" style="margin-top:2rem">
+    <div class="desc-chip"><div class="desc-pct">–10%</div><div class="desc-name">Early Bird<br><span style="font-size:.6rem">>60 días antes</span></div></div>
+    <div class="desc-chip"><div class="desc-pct">–15%</div><div class="desc-name">Last Minute<br><span style="font-size:.6rem"><15 días · plazas libres</span></div></div>
+    <div class="desc-chip"><div class="desc-pct">–10%</div><div class="desc-name">Grupos<br><span style="font-size:.6rem">>6 personas</span></div></div>
+    <div class="desc-chip"><div class="desc-pct">–5%</div><div class="desc-name">Repetidores<br><span style="font-size:.6rem">2ª reserva</span></div></div>
+    <div class="desc-chip"><div class="desc-pct">–10%</div><div class="desc-name">Astrónomos<br><span style="font-size:.6rem">Socios SAAS · SAA</span></div></div>
+  </div>
+</div>
+
+<div class="gold-rule rel"></div>
+
+<!-- ═══ RUTA ═══ -->
+<div class="section rel">
+  <div class="sec-label">Cómo nos movemos</div>
+  <h2 class="sec-title">La ruta de las <strong>estrellas</strong></h2>
+  <p class="sec-desc">Todo el transporte está incluido y gestionado por Daraltea Travel. Tú solo disfruta del paisaje.</p>
+  <div class="route-vis">
+    <div class="route-stops">
+      <div class="route-stop">
+        <div class="stop-circle">✈️</div>
+        <div class="stop-info">
+          <div class="stop-name">Aeropuerto de Alicante (ALC)</div>
+          <div class="stop-detail">Punto de llegada recomendado. Conexiones con toda España y Europa.</div>
+        </div>
+      </div>
+      <div class="route-line"></div>
+      <div class="route-stop">
+        <div class="stop-circle">🚌</div>
+        <div class="stop-info">
+          <div class="stop-name">Transfer ALC → Altea · Sede</div>
+          <div class="stop-detail">71 km · 45 min · Autopista AP-7 · Minibús privado</div>
+          <div class="stop-transport"><span class="transport-pill">🚌 Minibús privado incluido</span></div>
+        </div>
+      </div>
+      <div class="route-line"></div>
+      <div class="route-stop">
+        <div class="stop-circle">🏛️</div>
+        <div class="stop-info">
+          <div class="stop-name">Altea · Base del viaje</div>
+          <div class="stop-detail">Hotel boutique 4★ · 3 noches · Casco Antiguo BIC</div>
+        </div>
+      </div>
+      <div class="route-line"></div>
+      <div class="route-stop">
+        <div class="stop-circle">🚌</div>
+        <div class="stop-info">
+          <div class="stop-name">Altea → Sierra de Aitana</div>
+          <div class="stop-detail">58 km · 1 hora · CV-70 → CV-770 · Carretera de montaña</div>
+          <div class="stop-transport"><span class="transport-pill">🚌 Minibús privado incluido</span></div>
+        </div>
+      </div>
+      <div class="route-line"></div>
+      <div class="route-stop">
+        <div class="stop-circle">⛰️</div>
+        <div class="stop-info">
+          <div class="stop-name">Sierra Aitana · 1.558 m</div>
+          <div class="stop-detail">Senderismo · Telescopio profesional · Vía Láctea · Bortle 2</div>
+        </div>
+      </div>
+      <div class="route-line"></div>
+      <div class="route-stop">
+        <div class="stop-circle">🚌</div>
+        <div class="stop-info">
+          <div class="stop-name">Altea → Santa Pola (Puerto)</div>
+          <div class="stop-detail">84 km · 60 min · Autopista A-7</div>
+          <div class="stop-transport"><span class="transport-pill">🚌 Minibús privado incluido</span></div>
+        </div>
+      </div>
+      <div class="route-line"></div>
+      <div class="route-stop">
+        <div class="stop-circle">⛵</div>
+        <div class="stop-info">
+          <div class="stop-name">Ferry rápido Santa Pola → Tabarca</div>
+          <div class="stop-detail">3 millas náuticas · 25–30 min · Kontiki / Cruceros Golondrina</div>
+          <div class="stop-transport"><span class="transport-pill">⛵ Ferry incluido</span></div>
+        </div>
+      </div>
+      <div class="route-line"></div>
+      <div class="route-stop">
+        <div class="stop-circle">🏝️</div>
+        <div class="stop-info">
+          <div class="stop-name">Isla de Tabarca · Reserva Marina Starlight</div>
+          <div class="stop-detail">Buceo · Patrimonio s.XVIII · Cielo Starlight 2022 · Certificado</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="gold-rule rel"></div>
+
+<!-- ═══ GALERÍA ═══ -->
+<div class="section rel">
+  <div class="sec-label">Imágenes del viaje</div>
+  <h2 class="sec-title">Lo que <strong>vivirás</strong></h2>
+  <div class="gal-grid">
+    <div class="gal-item" style="background:linear-gradient(135deg,#020810,#0d1b2a)"><span>🌌</span><div class="gal-overlay"><span class="gal-cap">VÍA LÁCTEA · AITANA</span></div></div>
+    <div class="gal-item" style="background:linear-gradient(135deg,#0a1e30,#1a3a5c)"><span>🏛️</span><div class="gal-overlay"><span class="gal-cap">CÚPULA AZUL · ALTEA</span></div></div>
+    <div class="gal-item" style="background:linear-gradient(135deg,#030810,#0d2a3a)"><span>🔭</span><div class="gal-overlay"><span class="gal-cap">TELESCOPIO · AITANA</span></div></div>
+    <div class="gal-item" style="background:linear-gradient(135deg,#0a1e38,#153050)"><span>🏝️</span><div class="gal-overlay"><span class="gal-cap">TABARCA · RESERVA MARINA</span></div></div>
+    <div class="gal-item" style="background:linear-gradient(135deg,#1a0a2a,#2a1a3a)"><span>📸</span><div class="gal-overlay"><span class="gal-cap">ASTROFOTOGRAFÍA</span></div></div>
+    <div class="gal-item" style="background:linear-gradient(135deg,#050e20,#0a1e30)"><span>🤿</span><div class="gal-overlay"><span class="gal-cap">BUCEO · TABARCA</span></div></div>
+  </div>
+</div>
+
+<!-- ═══ CTA / CONTACTO ═══ -->
+<div class="cta-section rel">
+  <div class="sec-label" style="justify-content:center">Reserva tu experiencia</div>
+  <div class="cta-title">✦ ¿Listo para observar el universo? ✦</div>
+  <p class="cta-sub">Plazas limitadas · máximo 20 personas por salida · grupos reducidos y personalizados</p>
+  <div class="cta-btns">
+    <button class="btn-gold" onclick="window.open('http://grand-smakager-feaf7d.netlify.app','_blank')">✦ RESERVAR AHORA</button>
+    <button class="btn-outline" onclick="window.open('tel:654321123','_self')">📞 654 321 123</button>
+  </div>
+  <div class="contact-strip">
+    <div class="contact-item">📍 Av. Jaime I, nº 13 · 03590 Altea, Alicante</div>
+    <div class="contact-item">📞 <a href="tel:654321123">654 321 123</a></div>
+    <div class="contact-item">✉️ <a href="mailto:info@daraltea.com">info@daraltea.com</a></div>
+    <div class="contact-item">🌐 <a href="http://grand-smakager-feaf7d.netlify.app" target="_blank">daraltea.com</a></div>
+    <div class="contact-item">📸 @daraltea_travel</div>
+  </div>
+</div>
+
+<footer class="rel">
+  <div class="footer-brand">DARALTEA TRAVEL S.L.</div>
+  <p>CICEV-ALC · Registro de Turismo de la Comunitat Valenciana · Decreto 101/2018</p>
+  <p>Garantía de insolvencia conforme art. 164 TRLGDCU (RDL 23/2018) · Seguro RC 300.000 €</p>
+  <p style="margin-top:.4rem;font-size:.65rem">© 2027 Daraltea Travel S.L. Todos los derechos reservados · RGPD / LOPDGDD · Política de privacidad en daraltea.com</p>
+</footer>
+
+<script>
+(()=>{
+  const cv=document.getElementById('cv'),ctx=cv.getContext('2d');
+  let W,H,st=[];
+  const resize=()=>{W=cv.width=innerWidth;H=cv.height=innerHeight};
+  resize();addEventListener('resize',resize);
+  const init=()=>{st=[];const n=Math.floor(W*H/1400);for(let i=0;i<n;i++)st.push({x:Math.random()*W,y:Math.random()*H,r:.3+Math.random()*1.6,a:Math.random(),da:(.002+Math.random()*.007)*(Math.random()>.5?1:-1),c:Math.random()>.65?'#C9A84C':'#fff'})};
+  init();addEventListener('resize',init);
+  const loop=()=>{ctx.clearRect(0,0,W,H);st.forEach(s=>{s.a+=s.da;if(s.a>1||s.a<.06)s.da*=-1;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=s.c;ctx.globalAlpha=s.a;ctx.fill()});ctx.globalAlpha=1;requestAnimationFrame(loop)};
+  loop();
+  // scroll hint fade
+  const hint=document.getElementById('scroll-hint');
+  window.addEventListener('scroll',()=>{if(scrollY>100)hint.style.opacity='0';else hint.style.opacity='1'});
+})();
+</script>
+</body>
+</html>

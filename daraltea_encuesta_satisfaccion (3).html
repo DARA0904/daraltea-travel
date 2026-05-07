@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daraltea Travel · Encuesta de Satisfacción</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0D1B2A;
+  --navy-mid: #0f2540;
+  --gold: #C9A84C;
+  --gold-light: #e8c97a;
+  --gold-dim: rgba(201,168,76,.15);
+  --blue: #2176AE;
+  --white: #F5F5F0;
+  --text: #e8e4da;
+  --muted: rgba(232,228,218,.55);
+  --glass: rgba(13,27,42,.7);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+
+body {
+  background: var(--navy);
+  color: var(--text);
+  font-family: 'Lato', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── STARS CANVAS ── */
+#cv { position:fixed; inset:0; z-index:0; pointer-events:none; }
+
+/* ── WRAPPER ── */
+.wrap { position:relative; z-index:1; max-width:760px; margin:0 auto; padding:2rem 1.5rem 4rem; }
+
+/* ── HEADER ── */
+.site-header {
+  text-align:center;
+  padding: 3rem 0 2rem;
+  border-bottom: 1px solid rgba(201,168,76,.2);
+  margin-bottom: 2.5rem;
+}
+.logo-line { display:flex; align-items:center; justify-content:center; gap:1rem; margin-bottom:.5rem; }
+.logo-star { font-size:2rem; animation: pulse 3s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:.6;transform:scale(1)} 50%{opacity:1;transform:scale(1.1)} }
+.brand { font-family:'Cinzel',serif; font-size:2.4rem; font-weight:900; color:var(--gold); letter-spacing:.1em; }
+.brand-sub { font-family:'Cinzel',serif; font-size:.9rem; letter-spacing:.35em; color:var(--blue); margin-bottom:1.2rem; }
+.survey-title { font-family:'Cormorant Garamond',serif; font-size:1.9rem; font-weight:300; color:var(--white); font-style:italic; margin-bottom:.5rem; }
+.survey-desc { font-size:.88rem; color:var(--muted); max-width:500px; margin:0 auto; line-height:1.6; }
+
+/* ── GOLD RULE ── */
+.rule { height:1px; background:linear-gradient(90deg,transparent,var(--gold),transparent); margin:2rem 0; }
+
+/* ── PROGRESS ── */
+.progress-wrap { margin-bottom:2rem; }
+.progress-label { display:flex; justify-content:space-between; font-size:.75rem; color:var(--muted); margin-bottom:.5rem; letter-spacing:.08em; }
+.progress-bar { height:3px; background:rgba(255,255,255,.1); border-radius:3px; overflow:hidden; }
+.progress-fill { height:100%; background:linear-gradient(90deg,var(--blue),var(--gold)); border-radius:3px; transition:width .5s ease; }
+
+/* ── SECTION LABEL ── */
+.section-label {
+  font-family:'Cinzel',serif; font-size:.7rem; letter-spacing:.25em; color:var(--gold);
+  text-transform:uppercase; margin-bottom:1.5rem; display:flex; align-items:center; gap:.8rem;
+}
+.section-label::after { content:''; flex:1; height:1px; background:rgba(201,168,76,.2); }
+
+/* ── QUESTION CARD ── */
+.q-card {
+  background: rgba(15,37,64,.6);
+  border:1px solid rgba(201,168,76,.12);
+  border-radius:16px;
+  padding:1.6rem 1.8rem;
+  margin-bottom:1.2rem;
+  backdrop-filter:blur(12px);
+  transition:border-color .3s, box-shadow .3s;
+}
+.q-card:hover { border-color:rgba(201,168,76,.3); box-shadow:0 0 24px rgba(201,168,76,.06); }
+.q-num { font-family:'Cinzel',serif; font-size:.65rem; letter-spacing:.2em; color:var(--gold); margin-bottom:.4rem; }
+.q-text { font-family:'Cormorant Garamond',serif; font-size:1.15rem; font-weight:400; color:var(--white); margin-bottom:1.1rem; line-height:1.5; }
+
+/* ── STAR RATING ── */
+.star-row { display:flex; gap:.6rem; flex-wrap:wrap; }
+.star-btn {
+  background:none; border:none; font-size:1.8rem; cursor:pointer;
+  color:rgba(255,255,255,.2); transition:all .2s; padding:.1rem;
+  filter:drop-shadow(0 0 0 transparent);
+}
+.star-btn.active, .star-btn.hover { color:var(--gold); filter:drop-shadow(0 0 8px rgba(201,168,76,.6)); transform:scale(1.15); }
+.star-labels { display:flex; justify-content:space-between; margin-top:.4rem; font-size:.68rem; color:var(--muted); }
+
+/* ── NPS SCALE ── */
+.nps-row { display:flex; gap:.35rem; flex-wrap:wrap; }
+.nps-btn {
+  width:44px; height:44px; border-radius:8px;
+  border:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.03);
+  color:var(--text); font-family:'Cinzel',serif; font-size:.85rem; font-weight:600;
+  cursor:pointer; transition:all .2s;
+}
+.nps-btn:hover { border-color:var(--gold); color:var(--gold); }
+.nps-btn.sel-detractor { background:#7B2020; border-color:#a03030; color:#fff; }
+.nps-btn.sel-passive { background:#3A5A2A; border-color:#5a8a3a; color:#fff; }
+.nps-btn.sel-promoter { background:var(--blue); border-color:var(--gold); color:#fff; }
+.nps-labels { display:flex; justify-content:space-between; margin-top:.5rem; font-size:.68rem; color:var(--muted); }
+
+/* ── RADIO OPTIONS ── */
+.radio-grid { display:flex; flex-direction:column; gap:.5rem; }
+.radio-opt {
+  display:flex; align-items:center; gap:.8rem; padding:.6rem .9rem;
+  border:1px solid rgba(255,255,255,.08); border-radius:10px; cursor:pointer;
+  transition:all .2s;
+}
+.radio-opt:hover { border-color:rgba(201,168,76,.4); background:rgba(201,168,76,.05); }
+.radio-opt.selected { border-color:var(--gold); background:rgba(201,168,76,.1); }
+.radio-opt input { display:none; }
+.radio-circle { width:18px; height:18px; border-radius:50%; border:2px solid rgba(255,255,255,.3); flex-shrink:0; display:flex; align-items:center; justify-content:center; transition:all .2s; }
+.radio-opt.selected .radio-circle { border-color:var(--gold); background:var(--gold); }
+.radio-dot { width:8px; height:8px; border-radius:50%; background:var(--navy); opacity:0; transition:opacity .2s; }
+.radio-opt.selected .radio-dot { opacity:1; }
+.radio-label { font-size:.9rem; color:var(--text); }
+
+/* ── CHECKBOX OPTIONS ── */
+.check-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:.5rem; }
+.check-opt {
+  display:flex; align-items:center; gap:.6rem; padding:.6rem .9rem;
+  border:1px solid rgba(255,255,255,.08); border-radius:10px; cursor:pointer; transition:all .2s;
+}
+.check-opt:hover { border-color:rgba(201,168,76,.4); background:rgba(201,168,76,.05); }
+.check-opt.selected { border-color:var(--gold); background:rgba(201,168,76,.1); }
+.check-box { width:18px; height:18px; border-radius:5px; border:2px solid rgba(255,255,255,.3); flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:.7rem; transition:all .2s; }
+.check-opt.selected .check-box { border-color:var(--gold); background:var(--gold); color:var(--navy); }
+
+/* ── TEXTAREA ── */
+.q-textarea {
+  width:100%; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1);
+  border-radius:10px; padding:.8rem 1rem; color:var(--text); font-family:'Lato',sans-serif;
+  font-size:.9rem; resize:vertical; min-height:80px; outline:none; transition:border-color .2s;
+}
+.q-textarea:focus { border-color:var(--gold); }
+.q-textarea::placeholder { color:var(--muted); }
+
+/* ── TEXT INPUT ── */
+.q-input {
+  width:100%; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1);
+  border-radius:10px; padding:.7rem 1rem; color:var(--text); font-family:'Lato',sans-serif;
+  font-size:.9rem; outline:none; transition:border-color .2s;
+}
+.q-input:focus { border-color:var(--gold); }
+.q-input::placeholder { color:var(--muted); }
+
+/* ── VIAJE DATA ── */
+.viaje-grid { display:grid; grid-template-columns:1fr 1fr; gap:.8rem; }
+
+/* ── SUBMIT ── */
+.submit-area { text-align:center; margin-top:2.5rem; }
+.btn-submit {
+  background:linear-gradient(135deg,var(--gold),var(--gold-light));
+  color:var(--navy); border:none; border-radius:50px; padding:1rem 3.5rem;
+  font-family:'Cinzel',serif; font-size:.95rem; font-weight:700; letter-spacing:.12em;
+  cursor:pointer; transition:all .3s; box-shadow:0 0 30px rgba(201,168,76,.25);
+}
+.btn-submit:hover { transform:translateY(-2px); box-shadow:0 8px 40px rgba(201,168,76,.45); }
+.submit-note { font-size:.75rem; color:var(--muted); margin-top:.8rem; }
+
+/* ── THANK YOU ── */
+.thankyou { display:none; text-align:center; padding:4rem 2rem; }
+.thankyou.show { display:block; animation:fadeUp .8s ease forwards; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+.ty-star { font-size:4rem; margin-bottom:1rem; animation:spin 8s linear infinite; }
+@keyframes spin { to{transform:rotate(360deg)} }
+.ty-title { font-family:'Cinzel',serif; font-size:2rem; color:var(--gold); margin-bottom:.8rem; }
+.ty-text { font-family:'Cormorant Garamond',serif; font-size:1.2rem; color:var(--muted); font-style:italic; max-width:400px; margin:0 auto 1.5rem; line-height:1.6; }
+.ty-nps { display:inline-block; padding:.6rem 2rem; border:1px solid var(--gold); border-radius:50px; font-size:.8rem; color:var(--gold); letter-spacing:.1em; }
+
+/* ── FOOTER ── */
+.site-footer { text-align:center; padding:2rem 0 1rem; font-size:.72rem; color:var(--muted); letter-spacing:.05em; }
+.site-footer a { color:var(--gold); text-decoration:none; }
+</style>
+</head>
+<body>
+<canvas id="cv"></canvas>
+
+<div class="wrap">
+
+  <!-- HEADER -->
+  <div class="site-header">
+    <div class="logo-line">
+      <span class="logo-star">✦</span>
+      <span class="brand">DARALTEA</span>
+      <span class="logo-star">✦</span>
+    </div>
+    <div class="brand-sub">TRAVEL · ASTROTURISMO · COSTA BLANCA</div>
+    <h1 class="survey-title">Encuesta de Satisfacción</h1>
+    <p class="survey-desc">Tu experiencia bajo las estrellas nos ayuda a seguir mejorando. Dedícanos 3 minutos y recibe un <strong style="color:var(--gold)">5% de descuento</strong> en tu próxima reserva.</p>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span>Progreso</span>
+      <span id="prog-pct">0%</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+  </div>
+
+  <div id="survey-form">
+
+    <!-- BLOQUE 0: DATOS DEL VIAJE -->
+    <div class="section-label">Datos del viaje</div>
+    <div class="q-card">
+      <div class="q-text">Antes de empezar, cuéntanos un poco sobre tu viaje</div>
+      <div class="viaje-grid">
+        <div>
+          <div style="font-size:.75rem;color:var(--muted);margin-bottom:.4rem;letter-spacing:.06em">NOMBRE (OPCIONAL)</div>
+          <input class="q-input" placeholder="Tu nombre…" id="v-nombre">
+        </div>
+        <div>
+          <div style="font-size:.75rem;color:var(--muted);margin-bottom:.4rem;letter-spacing:.06em">FECHA DE SALIDA</div>
+          <input class="q-input" type="date" id="v-fecha">
+        </div>
+        <div>
+          <div style="font-size:.75rem;color:var(--muted);margin-bottom:.4rem;letter-spacing:.06em">TEMPORADA</div>
+          <div class="radio-grid" style="flex-direction:row;gap:.4rem">
+            <label class="radio-opt" onclick="selRadio(this,'temp')"><input type="radio"><div class="radio-circle"><div class="radio-dot"></div></div><span class="radio-label">Baja</span></label>
+            <label class="radio-opt" onclick="selRadio(this,'temp')"><input type="radio"><div class="radio-circle"><div class="radio-dot"></div></div><span class="radio-label">Media</span></label>
+            <label class="radio-opt" onclick="selRadio(this,'temp')"><input type="radio"><div class="radio-circle"><div class="radio-dot"></div></div><span class="radio-label">Alta</span></label>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:.75rem;color:var(--muted);margin-bottom:.4rem;letter-spacing:.06em">Nº DE PERSONAS</div>
+          <input class="q-input" type="number" min="1" max="20" placeholder="Ej: 2" id="v-pax">
+        </div>
+      </div>
+    </div>
+
+    <div class="rule"></div>
+
+    <!-- BLOQUE 1: VALORACIÓN GLOBAL -->
+    <div class="section-label">Valoración global · 1 mínimo / 5 máximo</div>
+
+    <div class="q-card" data-q="q1">
+      <div class="q-num">PREGUNTA 01</div>
+      <div class="q-text">Satisfacción general con el viaje combinado «Estrellas del Mediterráneo»</div>
+      <div class="star-row" id="sr-q1"></div>
+      <div class="star-labels"><span>Muy insatisfecho</span><span>Excelente</span></div>
+    </div>
+
+    <div class="q-card" data-q="q2">
+      <div class="q-num">PREGUNTA 02</div>
+      <div class="q-text">Calidad del alojamiento — Hotel Boutique Altea</div>
+      <div class="star-row" id="sr-q2"></div>
+      <div class="star-labels"><span>Muy bajo</span><span>Excepcional</span></div>
+    </div>
+
+    <div class="q-card" data-q="q3">
+      <div class="q-num">PREGUNTA 03</div>
+      <div class="q-text">Experiencia de observación astronómica en Sierra Aitana (1.558 m)</div>
+      <div class="star-row" id="sr-q3"></div>
+      <div class="star-labels"><span>Decepcionante</span><span>Mágico ✨</span></div>
+    </div>
+
+    <div class="q-card" data-q="q4">
+      <div class="q-num">PREGUNTA 04</div>
+      <div class="q-text">Experiencia en la Isla de Tabarca — Reserva Marina Starlight</div>
+      <div class="star-row" id="sr-q4"></div>
+      <div class="star-labels"><span>Por debajo de lo esperado</span><span>Increíble 🏝️</span></div>
+    </div>
+
+    <div class="q-card" data-q="q5">
+      <div class="q-num">PREGUNTA 05</div>
+      <div class="q-text">Profesionalidad y conocimiento de la guía astronómica</div>
+      <div class="star-row" id="sr-q5"></div>
+      <div class="star-labels"><span>Mejorable</span><span>Experta y apasionada</span></div>
+    </div>
+
+    <div class="q-card" data-q="q6">
+      <div class="q-num">PREGUNTA 06</div>
+      <div class="q-text">Relación calidad / precio del viaje combinado</div>
+      <div class="star-row" id="sr-q6"></div>
+      <div class="star-labels"><span>Caro para lo ofrecido</span><span>Excelente valor</span></div>
+    </div>
+
+    <div class="q-card" data-q="q7">
+      <div class="q-num">PREGUNTA 07</div>
+      <div class="q-text">Proceso de reserva online — web Daraltea.com</div>
+      <div class="star-row" id="sr-q7"></div>
+      <div class="star-labels"><span>Difícil y confuso</span><span>Muy sencillo</span></div>
+    </div>
+
+    <div class="q-card" data-q="q8">
+      <div class="q-num">PREGUNTA 08</div>
+      <div class="q-text">Información previa recibida antes del viaje (email de bienvenida, kit astronómico)</div>
+      <div class="star-row" id="sr-q8"></div>
+      <div class="star-labels"><span>Insuficiente</span><span>Completa y útil</span></div>
+    </div>
+
+    <div class="q-card" data-q="q9">
+      <div class="q-num">PREGUNTA 09</div>
+      <div class="q-text">Transporte — Minibús privado y barca rápida Santa Pola–Tabarca</div>
+      <div class="star-row" id="sr-q9"></div>
+      <div class="star-labels"><span>Con incidencias</span><span>Perfecto</span></div>
+    </div>
+
+    <div class="rule"></div>
+
+    <!-- BLOQUE 2: NPS -->
+    <div class="section-label">NPS — Net Promoter Score</div>
+    <div class="q-card">
+      <div class="q-num">PREGUNTA 10</div>
+      <div class="q-text">Del 0 al 10, ¿con qué probabilidad recomendarías Daraltea Travel a un amigo o familiar?</div>
+      <div class="nps-row" id="nps-row"></div>
+      <div class="nps-labels">
+        <span>🔴 0–6 Detractores</span>
+        <span>🟡 7–8 Pasivos</span>
+        <span>🟢 9–10 Promotores</span>
+      </div>
+      <div id="nps-feedback" style="margin-top:.8rem;font-size:.8rem;color:var(--muted);font-style:italic;min-height:1.2rem"></div>
+    </div>
+
+    <div class="rule"></div>
+
+    <!-- BLOQUE 3: PREGUNTAS ABIERTAS -->
+    <div class="section-label">Cuéntanos más</div>
+
+    <div class="q-card">
+      <div class="q-num">PREGUNTA 11</div>
+      <div class="q-text">¿Cuál fue el momento más especial de tu experiencia Daraltea?</div>
+      <textarea class="q-textarea" placeholder="La noche en Aitana cuando vimos la Vía Láctea fue…" id="qa-mejor"></textarea>
+    </div>
+
+    <div class="q-card">
+      <div class="q-num">PREGUNTA 12</div>
+      <div class="q-text">¿Qué mejorarías o añadirías al viaje?</div>
+      <textarea class="q-textarea" placeholder="Me hubiera gustado más tiempo en…" id="qa-mejorar"></textarea>
+    </div>
+
+    <div class="q-card">
+      <div class="q-num">PREGUNTA 13</div>
+      <div class="q-text">¿Cómo conociste Daraltea Travel?</div>
+      <div class="check-grid">
+        <label class="check-opt" onclick="togCheck(this)"><div class="check-box">✓</div><span class="radio-label">Google / Buscador</span></label>
+        <label class="check-opt" onclick="togCheck(this)"><div class="check-box">✓</div><span class="radio-label">Instagram</span></label>
+        <label class="check-opt" onclick="togCheck(this)"><div class="check-box">✓</div><span class="radio-label">TikTok</span></label>
+        <label class="check-opt" onclick="togCheck(this)"><div class="check-box">✓</div><span class="radio-label">Facebook</span></label>
+        <label class="check-opt" onclick="togCheck(this)"><div class="check-box">✓</div><span class="radio-label">Civitatis</span></label>
+        <label class="check-opt" onclick="togCheck(this)"><div class="check-box">✓</div><span class="radio-label">GetYourGuide</span></label>
+        <label class="check-opt" onclick="togCheck(this)"><div class="check-box">✓</div><span class="radio-label">Amigo / familiar</span></label>
+        <label class="check-opt" onclick="togCheck(this)"><div class="check-box">✓</div><span class="radio-label">Oficina de turismo</span></label>
+        <label class="check-opt" onclick="togCheck(this)"><div class="check-box">✓</div><span class="radio-label">FITUR / Feria</span></label>
+        <label class="check-opt" onclick="togCheck(this)"><div class="check-box">✓</div><span class="radio-label">Hotel Altea</span></label>
+        <label class="check-opt" onclick="togCheck(this)"><div class="check-box">✓</div><span class="radio-label">Otro</span></label>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-num">PREGUNTA 14</div>
+      <div class="q-text">¿Repetirías la experiencia o contrataría otro viaje con Daraltea Travel?</div>
+      <div class="radio-grid">
+        <label class="radio-opt" onclick="selRadio(this,'rep')"><input type="radio"><div class="radio-circle"><div class="radio-dot"></div></div><span class="radio-label">Sí, ¡sin dudarlo! 🌟</span></label>
+        <label class="radio-opt" onclick="selRadio(this,'rep')"><input type="radio"><div class="radio-circle"><div class="radio-dot"></div></div><span class="radio-label">Probablemente sí</span></label>
+        <label class="radio-opt" onclick="selRadio(this,'rep')"><input type="radio"><div class="radio-circle"><div class="radio-dot"></div></div><span class="radio-label">Necesito pensarlo</span></label>
+        <label class="radio-opt" onclick="selRadio(this,'rep')"><input type="radio"><div class="radio-circle"><div class="radio-dot"></div></div><span class="radio-label">No, de momento no</span></label>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-num">PREGUNTA 15</div>
+      <div class="q-text">Email para recibir tu código descuento 5% (opcional)</div>
+      <input class="q-input" type="email" placeholder="estrellas@tumail.com" id="v-email">
+      <div style="font-size:.72rem;color:var(--muted);margin-top:.5rem">Recibirás un código exclusivo válido por 12 meses. Tus datos se tratan conforme al RGPD y la LOPDGDD.</div>
+    </div>
+
+    <div class="submit-area">
+      <button class="btn-submit" onclick="submitSurvey()">✦ ENVIAR ENCUESTA ✦</button>
+      <div class="submit-note">Gracias por compartir tu experiencia bajo las estrellas de la Costa Blanca</div>
+    </div>
+
+  </div><!-- /survey-form -->
+
+  <!-- THANK YOU -->
+  <div class="thankyou" id="thankyou">
+    <div class="ty-star">✦</div>
+    <div class="ty-title">¡Gracias, viajero estelar!</div>
+    <p class="ty-text">Tu valoración es nuestra brújula bajo el cielo oscuro de Aitana. Cada estrella que observaste, cada ola que cruzó hacia Tabarca, cada calle empedrada de Altea… has sido parte de algo especial.</p>
+    <div class="ty-nps" id="ty-nps-badge">✦ RESULTADO GUARDADO ✦</div>
+    <div class="rule" style="margin:2rem auto;max-width:300px"></div>
+    <p style="font-size:.8rem;color:var(--muted);margin-bottom:.5rem">Si recibiste tu código de descuento, úsalo en tu próxima reserva en</p>
+    <p style="font-family:'Cinzel',serif;color:var(--gold);font-size:.9rem">daraltea.com</p>
+  </div>
+
+  <div class="site-footer">
+    <p>© 2027 Daraltea Travel S.L. · Av. Jaime I, nº 13 · 03590 Altea, Alicante · <a href="tel:654321123">654 321 123</a></p>
+    <p style="margin-top:.3rem">info@daraltea.com · CICEV-ALC · Garantía insolvencia conforme Decreto 101/2018 CV · RGPD / LOPDGDD</p>
+  </div>
+
+</div><!-- /wrap -->
+
+<script>
+// ── STARS ──────────────────────────────────────────────────────────────────
+(()=>{
+  const cv=document.getElementById('cv'),ctx=cv.getContext('2d');
+  let W,H,st=[];
+  const resize=()=>{W=cv.width=innerWidth;H=cv.height=innerHeight;};
+  resize(); addEventListener('resize',resize);
+  const init=()=>{st=[];const n=Math.floor(W*H/1600);for(let i=0;i<n;i++)st.push({x:Math.random()*W,y:Math.random()*H,r:.3+Math.random()*1.4,a:Math.random(),da:(.003+Math.random()*.006)*(Math.random()>.5?1:-1),c:Math.random()>.65?'#C9A84C':'#fff'});};
+  init(); addEventListener('resize',init);
+  const loop=()=>{ctx.clearRect(0,0,W,H);st.forEach(s=>{s.a+=s.da;if(s.a>1||s.a<.08)s.da*=-1;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=s.c;ctx.globalAlpha=s.a;ctx.fill();});ctx.globalAlpha=1;requestAnimationFrame(loop);};
+  loop();
+})();
+
+// ── STAR RATINGS ───────────────────────────────────────────────────────────
+const ratings = {};
+['q1','q2','q3','q4','q5','q6','q7','q8','q9'].forEach(id=>{
+  ratings[id] = 0;
+  const row = document.getElementById('sr-'+id);
+  for(let i=1;i<=5;i++){
+    const btn = document.createElement('button');
+    btn.className='star-btn'; btn.textContent='★'; btn.dataset.val=i;
+    btn.addEventListener('mouseenter',()=>highlightStars(id,i));
+    btn.addEventListener('mouseleave',()=>highlightStars(id,ratings[id]));
+    btn.addEventListener('click',()=>{ratings[id]=i;highlightStars(id,i);updateProgress();});
+    row.appendChild(btn);
+  }
+});
+function highlightStars(id,val){
+  document.querySelectorAll(`#sr-${id} .star-btn`).forEach((b,i)=>{
+    b.classList.toggle('active',i<val); b.classList.toggle('hover',false);
+  });
+}
+
+// ── NPS ────────────────────────────────────────────────────────────────────
+let npsVal = -1;
+const npsRow = document.getElementById('nps-row');
+for(let i=0;i<=10;i++){
+  const btn=document.createElement('button'); btn.className='nps-btn'; btn.textContent=i;
+  btn.addEventListener('click',()=>{
+    npsVal=i;
+    document.querySelectorAll('.nps-btn').forEach(b=>b.classList.remove('sel-detractor','sel-passive','sel-promoter'));
+    const cls = i<=6?'sel-detractor':i<=8?'sel-passive':'sel-promoter';
+    btn.classList.add(cls);
+    const msg = i<=6?'😔 Lamentamos tu experiencia. Queremos mejorar.':i<=8?'😊 Gracias. ¿Qué haría tu experiencia perfecta?':'⭐ ¡Eres un embajador estelar de Daraltea!';
+    document.getElementById('nps-feedback').textContent=msg;
+    updateProgress();
+  });
+  npsRow.appendChild(btn);
+}
+
+// ── RADIO / CHECKBOX ───────────────────────────────────────────────────────
+function selRadio(el,group){
+  document.querySelectorAll(`[onclick*="'${group}'"]`).forEach(e=>e.classList.remove('selected'));
+  el.classList.add('selected'); updateProgress();
+}
+function togCheck(el){ el.classList.toggle('selected'); updateProgress(); }
+
+// ── PROGRESS ───────────────────────────────────────────────────────────────
+function updateProgress(){
+  let filled=0, total=11;
+  Object.values(ratings).forEach(v=>{if(v>0)filled++;});
+  if(npsVal>=0)filled++;
+  const pct=Math.round(filled/total*100);
+  document.getElementById('prog-fill').style.width=pct+'%';
+  document.getElementById('prog-pct').textContent=pct+'%';
+}
+
+// ── SUBMIT ─────────────────────────────────────────────────────────────────
+function submitSurvey(){
+  const avg=(Object.values(ratings).reduce((a,b)=>a+b,0)/9).toFixed(1);
+  const npsLabel=npsVal<=6?'🔴 Detractor':npsVal<=8?'🟡 Pasivo':'🟢 Promotor';
+  document.getElementById('survey-form').style.display='none';
+  const ty=document.getElementById('thankyou');
+  ty.classList.add('show');
+  document.getElementById('ty-nps-badge').textContent=`★ Media: ${avg}/5  ·  NPS: ${npsVal>=0?npsVal:'—'} (${npsVal>=0?npsLabel:'Sin respuesta'})`;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
